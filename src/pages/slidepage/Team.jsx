@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import dayjs from 'dayjs'
 import api from '../../libs/api'
-const url = 'http://localhost:3002/api/storage/'
+const storageBaseUrl = process.env.REACT_APP_STORAGE_URL || 'http://localhost:3002/api/storage/'
 
 
 const Team = () => {
@@ -35,7 +35,8 @@ const Team = () => {
   }, [])
 
   useEffect(() => {
-    const ws = new WebSocket('wss://api7.sistelk.id'); // sesuaikan dengan PORT backend-mu
+    const websocketUrl = process.env.REACT_APP_WEBSOCKET_URL || 'wss://api7.sistelk.id'
+    const ws = new WebSocket(websocketUrl)
     ws.onopen = () => {
       console.log('WebSocket Connected');
     };
@@ -301,7 +302,7 @@ const Team = () => {
                   >
                     <div className="relative overflow-hidden rounded-lg shadow-lg bg-gray-800 aspect-square">
                       <img
-                        src={image?.foto ? url + image.foto : ''}
+                        src={image?.foto ? storageBaseUrl + image.foto : ''}
                         alt={image?.nama || 'Team Member'}
                         className="w-full h-full object-cover"
                       />
@@ -386,7 +387,7 @@ const Team = () => {
                 >
                   <div className="relative overflow-hidden rounded-lg shadow-lg bg-gray-800 aspect-square">
                     <img
-                      src={image?.foto ? url + image.foto : ''}
+                      src={image?.foto ? storageBaseUrl + image.foto : ''}
                       alt="Background"
                       className="w-full h-full object-cover filter blur-sm"
                     />
@@ -457,7 +458,7 @@ const Team = () => {
               className="relative overflow-hidden rounded-3xl shadow-2xl"
             >
               <img
-                src={galleryImages[currentCenterImage]?.foto ? url + galleryImages[currentCenterImage].foto : ''}
+                src={galleryImages[currentCenterImage]?.foto ? storageBaseUrl + galleryImages[currentCenterImage].foto : ''}
                 alt={galleryImages[currentCenterImage]?.nama || 'Team Member'}
                 className="w-full h-[70vh] object-cover"
               />
@@ -610,7 +611,7 @@ const Team = () => {
               onClick={(e) => e.stopPropagation()}
             >
               <img
-                src={selectedImage?.foto ? url + selectedImage.foto : ''}
+                src={selectedImage?.foto ? storageBaseUrl + selectedImage.foto : ''}
                 alt={selectedImage?.nama || 'Team Member'}
                 className="w-full h-full object-cover rounded-2xl"
               />
