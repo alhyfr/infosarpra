@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import dayjs from 'dayjs'
 import api from '../../libs/api'
-const storageBaseUrl = process.env.REACT_APP_STORAGE_URL || 'http://localhost:3002/api/storage/'
+// const storageBaseUrl = process.env.REACT_APP_STORAGE_URL || 'http://localhost:3002/api/storage/'
+const storageBaseUrl = 'https://api7.sistelk.id/api/storage/'
 
 
 const Team = () => {
@@ -42,8 +43,9 @@ const Team = () => {
     };
     ws.onmessage = (event) => {
       const msg = JSON.parse(event.data);
-      if (msg.type === 'DATA_UPDATED') {
+      if (msg.type === 'teamUpdated') {
         getTeam(); // Trigger refresh polling
+        console.log('Team Updated');
       }
     };
     ws.onclose = () => {
