@@ -20,12 +20,10 @@ const Team = () => {
       
       if (response.data && response.data.data) {
         setGalleryImages(response.data.data)
-        console.log('Team data loaded:', response.data.data)
       } else {
         throw new Error('Invalid response format')
       }
     } catch (err) {
-      console.error('Error fetching team data:', err)
       setError(err.message)
     } finally {
       setLoading(false)
@@ -35,6 +33,25 @@ const Team = () => {
   useEffect(() => {
     getTeam()
   }, [])
+
+  useEffect(() => {
+    const ws = new WebSocket('wss://api7.sistelk.id'); // sesuaikan dengan PORT backend-mu
+    ws.onopen = () => {
+      console.log('WebSocket Connected');
+    };
+    ws.onmessage = (event) => {
+      const msg = JSON.parse(event.data);
+      if (msg.type === 'DATA_UPDATED') {
+        getTeam(); // Trigger refresh polling
+      }
+    };
+    ws.onclose = () => {
+      console.log('WebSocket Disconnected');
+    };
+    return () => {
+      ws.close();
+    };
+  }, []);
  
 
 
