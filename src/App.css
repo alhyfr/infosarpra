@@ -1,38 +1,127 @@
-.App {
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Import Slick CSS */
+@import "~slick-carousel/slick/slick.css";
+@import "~slick-carousel/slick/slick-theme.css";
+
+/* Slider Styles */
+.slider-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+  width: 100%;
+}
+
+.slide-item {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 60px 40px;
   text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  margin: 0 10px;
+  height: 300px;
+  display: flex !important;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+}
+
+.slide-content {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.slide-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.slide-description {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  opacity: 0.9;
+  margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .slide-item {
+    padding: 40px 20px;
+  }
+  
+  .slide-title {
+    font-size: 2rem;
+  }
+  
+  .slide-description {
+    font-size: 1rem;
+  }
+}
+
+/* Slick Slider Customization */
+.slick-dots {
+  bottom: -50px;
+}
+
+.slick-dots li button:before {
+  color: #667eea;
+  font-size: 16px;
+}
+
+.slick-dots li.slick-active button:before {
+  color: #764ba2;
+}
+
+/* Arrow Styling */
+.slick-prev,
+.slick-next {
+  z-index: 1000;
+  width: 50px;
+  height: 50px;
+  background: rgba(102, 126, 234, 0.8);
+  border-radius: 50%;
+  border: none;
   color: white;
+  font-size: 20px;
+  transition: all 0.3s ease;
 }
 
-.App-link {
-  color: #61dafb;
+.slick-prev:hover,
+.slick-next:hover {
+  background: rgba(102, 126, 234, 1);
+  transform: scale(1.1);
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.slick-prev:before,
+.slick-next:before {
+  color: white;
+  font-size: 20px;
+}
+
+.slick-prev {
+  left: -60px;
+}
+
+.slick-next {
+  right: -60px;
+}
+
+/* Ensure horizontal scrolling works */
+.slick-slider {
+  width: 100%;
+  overflow: hidden;
+}
+
+.slick-list {
+  width: 100%;
+  overflow: hidden;
+}
+
+.slick-track {
+  display: flex;
+  width: 100%;
 }
