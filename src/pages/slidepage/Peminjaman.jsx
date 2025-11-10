@@ -108,6 +108,16 @@ const Peminjaman = () => {
     return () => clearInterval(interval);
   }, []);
 
+  // Auto reload data setiap 10 detik
+  useEffect(() => {
+    const interval = setInterval(() => {
+      getRuangan();
+      getAtk();
+      getPinjamAlat();
+    }, 10000); // 10 detik = 10000ms
+    return () => clearInterval(interval);
+  }, [getRuangan, getAtk, getPinjamAlat]);
+
   // Fungsi untuk menentukan status berdasarkan waktu
   const getStatusByTime = (tanggalPinjam, waktuMulai, waktuSelesai) => {
     if (!tanggalPinjam || (!waktuMulai && !waktuSelesai)) {
@@ -573,6 +583,7 @@ const Peminjaman = () => {
                 ) : (
                   atk.map((request, index) => {
                     // Mapping data dari API ke format yang diharapkan
+                    const nabar = request.nabar || "-";
                     const jumlah = request.vol || request.qty || request.quantity || "-";
                     const peminjam = request.pengambil|| request.nama_peminjam || request.user_nama || "-";
                     const tanggalPinjam = request.tanggal_pinjam || request.tanggal || request.tgl || request.tgl_pinjam || "";
@@ -620,7 +631,44 @@ const Peminjaman = () => {
                           status
                         )} rounded-md p-2 hover:bg-white/20 transition-all duration-300`}
                   >
-                    
+                    <div className="flex items-center justify-between mb-1">
+                      <h3 className="text-xs font-bold text-white truncate">
+                        {nabar}
+                      </h3>
+                      <motion.span 
+                        className={`px-1.5 py-0.5 rounded-full text-xs font-semibold flex items-center space-x-1 ${getStatusColor(
+                          status
+                        )}`}
+                        animate={
+                          status === "active" ||
+                          status === "aktif" ||
+                          status === "approved" ||
+                          status === "disetujui"
+                            ? {
+                          opacity: [1, 0.3, 1],
+                                scale: [1, 1.05, 1],
+                              }
+                            : {}
+                        }
+                        transition={
+                          status === "active" ||
+                          status === "aktif" ||
+                          status === "approved" ||
+                          status === "disetujui"
+                            ? {
+                          duration: 1.5,
+                          repeat: Infinity,
+                                ease: "easeInOut",
+                              }
+                            : {}
+                        }
+                      >
+                        {getStatusIcon(status)}
+                        <span className="hidden sm:inline">
+                          {getStatusText(status)}
+                        </span>
+                      </motion.span>
+                    </div>
                     <div className="space-y-0.5 text-xs text-gray-300">
                       <div className="flex items-center space-x-1">
                         <User className="w-2.5 h-2.5 text-blue-400 flex-shrink-0" />
