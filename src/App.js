@@ -34,12 +34,12 @@ function App() {
         <SwiperSlide>
           <Team />
         </SwiperSlide>
-        <SwiperSlide>
+        {/* <SwiperSlide>
           <Coe />
         </SwiperSlide>
         <SwiperSlide>
           <Keluhan />
-        </SwiperSlide>
+        </SwiperSlide> */}
         <SwiperSlide>
           <Peminjaman />
         </SwiperSlide>
