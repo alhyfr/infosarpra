@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'motion/react'
+import React, { useState, useEffect, useCallback } from "react";
+import { motion, AnimatePresence } from "motion/react";
 import { 
   Building2, 
   Package, 
@@ -10,837 +10,317 @@ import {
   CheckCircle, 
   AlertTriangle,
   XCircle,
-  RotateCcw
-} from 'lucide-react'
-import dayjs from 'dayjs'
+  RotateCcw,
+} from "lucide-react";
+import dayjs from "dayjs";
+import api from "../../libs/api";
 
 const Peminjaman = () => {
-  const [roomBookings, setRoomBookings] = useState([])
-  const [atkRequests, setAtkRequests] = useState([])
-  const [equipmentBookings, setEquipmentBookings] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [currentTime, setCurrentTime] = useState(dayjs())
+  const [loading, setLoading] = useState(true);
+  const [currentTime, setCurrentTime] = useState(dayjs());
+  const [ruangan, setRuangan] = useState([]);
+  const [atk, setAtk] = useState([]);
+  const[pinjamAlat, setPinjamAlat] = useState([]);
+
+  const getRuangan = useCallback(async () => {
+    try {
+      setLoading(true);
+      const response = await api.get("/pinjam-ruangan");
+      // Pastikan response.data adalah array
+      const data = Array.isArray(response.data)
+        ? response.data
+        : response.data?.data || [];
+      setRuangan(data);
+      console.log("Data ruangan:", data);
+    } catch (error) {
+      console.error("Error fetching ruangan:", error);
+      setRuangan([]); // Set empty array jika error
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+  const getAtk = useCallback(async () => {
+    try {
+      const response = await api.get("/ambil-atk");
+      // Pastikan response.data adalah array
+      const data = Array.isArray(response.data)
+        ? response.data
+        : response.data?.data || [];
+      setAtk(data);
+      console.log("Data ATK:", data);
+    } catch (error) {
+      console.error("Error fetching ATK:", error);
+      setAtk([]); // Set empty array jika error
+    }
+  }, []);
+  const getPinjamAlat = useCallback(async () => {
+    try {
+      const response = await api.get("/pinjam-alat");
+      const data = Array.isArray(response.data)
+        ? response.data
+        : response.data?.data || [];
+      setPinjamAlat(data);
+      console.log("Data Pinjam Alat:", data);
+    } catch (error) {
+      console.error("Error fetching Pinjam Alat:", error);
+      setPinjamAlat([]); // Set empty array jika error
+    }
+  }, []);
+  
 
   useEffect(() => {
-    // Sample data for room bookings
-    const sampleRoomBookings = [
-      {
-        id: 1,
-        ruangan: "Ruang Rapat Utama",
-        peminjam: "Ahmad Rizki",
-        unit_kerja: "Bagian Keuangan",
-        tanggal_pinjam: "2024-01-15",
-        tanggal_kembali: "2024-01-15",
-        waktu_mulai: "09:00",
-        waktu_selesai: "12:00",
-        status: "active",
-        keperluan: "Rapat Koordinasi Bulanan"
-      },
-      {
-        id: 2,
-        ruangan: "Lab Komputer A",
-        peminjam: "Siti Nurhaliza",
-        unit_kerja: "Bagian IT",
-        tanggal_pinjam: "2024-01-16",
-        tanggal_kembali: "2024-01-16",
-        waktu_mulai: "14:00",
-        waktu_selesai: "17:00",
-        status: "pending",
-        keperluan: "Pelatihan Sistem"
-      },
-      {
-        id: 3,
-        ruangan: "Auditorium",
-        peminjam: "Budi Santoso",
-        unit_kerja: "Bagian HRD",
-        tanggal_pinjam: "2024-01-14",
-        tanggal_kembali: "2024-01-14",
-        waktu_mulai: "08:00",
-        waktu_selesai: "16:00",
-        status: "completed",
-        keperluan: "Seminar Karyawan"
-      },
-      {
-        id: 4,
-        ruangan: "Ruang Meeting A",
-        peminjam: "Eko Prasetyo",
-        unit_kerja: "Bagian IT",
-        tanggal_pinjam: "2024-01-16",
-        tanggal_kembali: "2024-01-16",
-        waktu_mulai: "09:00",
-        waktu_selesai: "11:00",
-        status: "active",
-        keperluan: "Rapat Tim IT"
-      },
-      {
-        id: 5,
-        ruangan: "Lab Komputer 1",
-        peminjam: "Fitri Ayu",
-        unit_kerja: "Bagian Training",
-        tanggal_pinjam: "2024-01-17",
-        tanggal_kembali: "2024-01-17",
-        waktu_mulai: "13:00",
-        waktu_selesai: "17:00",
-        status: "pending",
-        keperluan: "Workshop Database"
-      },
-      {
-        id: 6,
-        ruangan: "Ruang Meeting B",
-        peminjam: "Gunawan",
-        unit_kerja: "Bagian HRD",
-        tanggal_pinjam: "2024-01-18",
-        tanggal_kembali: "2024-01-18",
-        waktu_mulai: "08:00",
-        waktu_selesai: "10:00",
-        status: "completed",
-        keperluan: "Rapat Evaluasi"
-      },
-      {
-        id: 7,
-        ruangan: "Lab Komputer 2",
-        peminjam: "Hani Sari",
-        unit_kerja: "Bagian IT",
-        tanggal_pinjam: "2024-01-19",
-        tanggal_kembali: "2024-01-19",
-        waktu_mulai: "14:00",
-        waktu_selesai: "16:00",
-        status: "active",
-        keperluan: "Pelatihan Web Dev"
-      },
-      {
-        id: 8,
-        ruangan: "Ruang Meeting C",
-        peminjam: "Indra Kurniawan",
-        unit_kerja: "Bagian Marketing",
-        tanggal_pinjam: "2024-01-20",
-        tanggal_kembali: "2024-01-20",
-        waktu_mulai: "10:00",
-        waktu_selesai: "12:00",
-        status: "pending",
-        keperluan: "Rapat Tim Marketing"
-      },
-      {
-        id: 9,
-        ruangan: "Lab Komputer 3",
-        peminjam: "Joko Widodo",
-        unit_kerja: "Bagian IT",
-        tanggal_pinjam: "2024-01-21",
-        tanggal_kembali: "2024-01-21",
-        waktu_mulai: "09:00",
-        waktu_selesai: "13:00",
-        status: "completed",
-        keperluan: "Pelatihan Mobile App"
-      },
-      {
-        id: 10,
-        ruangan: "Ruang Meeting D",
-        peminjam: "Kartika Sari",
-        unit_kerja: "Bagian HRD",
-        tanggal_pinjam: "2024-01-22",
-        tanggal_kembali: "2024-01-22",
-        waktu_mulai: "11:00",
-        waktu_selesai: "13:00",
-        status: "active",
-        keperluan: "Rapat Tim HR"
-      },
-      {
-        id: 11,
-        ruangan: "Lab Komputer 4",
-        peminjam: "Lina Marlina",
-        unit_kerja: "Bagian IT",
-        tanggal_pinjam: "2024-01-23",
-        tanggal_kembali: "2024-01-23",
-        waktu_mulai: "15:00",
-        waktu_selesai: "17:00",
-        status: "pending",
-        keperluan: "Workshop UI/UX"
-      },
-      {
-        id: 12,
-        ruangan: "Ruang Meeting E",
-        peminjam: "Muhammad Ali",
-        unit_kerja: "Bagian Keuangan",
-        tanggal_pinjam: "2024-01-24",
-        tanggal_kembali: "2024-01-24",
-        waktu_mulai: "08:00",
-        waktu_selesai: "10:00",
-        status: "completed",
-        keperluan: "Rapat Tim Finance"
-      },
-      {
-        id: 13,
-        ruangan: "Lab Komputer 5",
-        peminjam: "Nina Sari",
-        unit_kerja: "Bagian IT",
-        tanggal_pinjam: "2024-01-25",
-        tanggal_kembali: "2024-01-25",
-        waktu_mulai: "13:00",
-        waktu_selesai: "15:00",
-        status: "active",
-        keperluan: "Pelatihan Cloud Computing"
-      },
-      {
-        id: 14,
-        ruangan: "Ruang Meeting F",
-        peminjam: "Oscar Pratama",
-        unit_kerja: "Bagian Operations",
-        tanggal_pinjam: "2024-01-26",
-        tanggal_kembali: "2024-01-26",
-        waktu_mulai: "14:00",
-        waktu_selesai: "16:00",
-        status: "pending",
-        keperluan: "Rapat Tim Operations"
-      },
-      {
-        id: 15,
-        ruangan: "Lab Komputer 6",
-        peminjam: "Putri Maharani",
-        unit_kerja: "Bagian IT",
-        tanggal_pinjam: "2024-01-27",
-        tanggal_kembali: "2024-01-27",
-        waktu_mulai: "09:00",
-        waktu_selesai: "12:00",
-        status: "completed",
-        keperluan: "Workshop DevOps"
-      },
-      {
-        id: 16,
-        ruangan: "Ruang Meeting G",
-        peminjam: "Qori Sandria",
-        unit_kerja: "Bagian Sales",
-        tanggal_pinjam: "2024-01-28",
-        tanggal_kembali: "2024-01-28",
-        waktu_mulai: "10:00",
-        waktu_selesai: "12:00",
-        status: "active",
-        keperluan: "Rapat Tim Sales"
-      },
-      {
-        id: 17,
-        ruangan: "Lab Komputer 7",
-        peminjam: "Rizki Pratama",
-        unit_kerja: "Bagian IT",
-        tanggal_pinjam: "2024-01-29",
-        tanggal_kembali: "2024-01-29",
-        waktu_mulai: "16:00",
-        waktu_selesai: "18:00",
-        status: "pending",
-        keperluan: "Pelatihan AI/ML"
-      },
-      {
-        id: 18,
-        ruangan: "Ruang Meeting H",
-        peminjam: "Sari Dewi",
-        unit_kerja: "Bagian Legal",
-        tanggal_pinjam: "2024-01-30",
-        tanggal_kembali: "2024-01-30",
-        waktu_mulai: "11:00",
-        waktu_selesai: "13:00",
-        status: "completed",
-        keperluan: "Rapat Tim Legal"
-      },
-      {
-        id: 19,
-        ruangan: "Lab Komputer 8",
-        peminjam: "Tono Wijaya",
-        unit_kerja: "Bagian IT",
-        tanggal_pinjam: "2024-01-31",
-        tanggal_kembali: "2024-01-31",
-        waktu_mulai: "08:00",
-        waktu_selesai: "11:00",
-        status: "active",
-        keperluan: "Workshop Cybersecurity"
-      },
-      {
-        id: 20,
-        ruangan: "Ruang Meeting I",
-        peminjam: "Umi Kalsum",
-        unit_kerja: "Bagian Quality",
-        tanggal_pinjam: "2024-02-01",
-        tanggal_kembali: "2024-02-01",
-        waktu_mulai: "09:00",
-        waktu_selesai: "11:00",
-        status: "pending",
-        keperluan: "Rapat Tim Quality"
-      },
-      {
-        id: 21,
-        ruangan: "Lab Komputer 9",
-        peminjam: "Vina Panduwinata",
-        unit_kerja: "Bagian IT",
-        tanggal_pinjam: "2024-02-02",
-        tanggal_kembali: "2024-02-02",
-        waktu_mulai: "14:00",
-        waktu_selesai: "16:00",
-        status: "completed",
-        keperluan: "Pelatihan Blockchain"
-      },
-      {
-        id: 22,
-        ruangan: "Ruang Meeting J",
-        peminjam: "Wahyu Nugroho",
-        unit_kerja: "Bagian Admin",
-        tanggal_pinjam: "2024-02-03",
-        tanggal_kembali: "2024-02-03",
-        waktu_mulai: "10:00",
-        waktu_selesai: "12:00",
-        status: "active",
-        keperluan: "Rapat Tim Admin"
+    getRuangan();
+    getAtk();
+    getPinjamAlat();
+  }, [getRuangan, getAtk, getPinjamAlat]);
+
+  useEffect(() => {
+    const websocketUrl =
+      process.env.REACT_APP_WEBSOCKET_URL || "wss://api7.sistelk.id";
+    const ws = new WebSocket(websocketUrl);
+    ws.onopen = () => {
+      console.log("WebSocket Connected");
+    };
+    ws.onmessage = (event) => {
+      const msg = JSON.parse(event.data);
+      if (msg.type === "pinruanganUpdated") {
+        getRuangan(); // Trigger refresh polling
       }
-    ]
-
-    // Sample data for ATK requests
-    const sampleAtkRequests = [
-      {
-        id: 1,
-        item: "Kertas A4",
-        jumlah: "5 rim",
-        peminjam: "Dewi Kartika",
-        unit_kerja: "Bagian Administrasi",
-        tanggal_pinjam: "2024-01-15",
-        tanggal_kembali: "2024-01-20",
-        status: "active",
-        keperluan: "Dokumentasi Proyek"
-      },
-      {
-        id: 2,
-        item: "Pulpen Hitam",
-        jumlah: "20 pcs",
-        peminjam: "Rizki Pratama",
-        unit_kerja: "Bagian Produksi",
-        tanggal_pinjam: "2024-01-16",
-        tanggal_kembali: "2024-01-18",
-        status: "pending",
-        keperluan: "Pelatihan Staff"
-      },
-      {
-        id: 3,
-        item: "Binder A4",
-        jumlah: "10 pcs",
-        peminjam: "Maya Sari",
-        unit_kerja: "Bagian Marketing",
-        tanggal_pinjam: "2024-01-12",
-        tanggal_kembali: "2024-01-12",
-        status: "completed",
-        keperluan: "Presentasi Klien"
-      },
-      {
-        id: 4,
-        item: "Stapler",
-        jumlah: "3 pcs",
-        peminjam: "Ahmad Rizki",
-        unit_kerja: "Bagian IT",
-        tanggal_pinjam: "2024-01-17",
-        tanggal_kembali: "2024-01-19",
-        status: "active",
-        keperluan: "Dokumentasi Sistem"
-      },
-      {
-        id: 5,
-        item: "Kertas HVS",
-        jumlah: "10 rim",
-        peminjam: "Siti Nurhaliza",
-        unit_kerja: "Bagian HRD",
-        tanggal_pinjam: "2024-01-18",
-        tanggal_kembali: "2024-01-22",
-        status: "pending",
-        keperluan: "Formulir Karyawan"
-      },
-      {
-        id: 6,
-        item: "Pensil 2B",
-        jumlah: "50 pcs",
-        peminjam: "Budi Santoso",
-        unit_kerja: "Bagian Training",
-        tanggal_pinjam: "2024-01-19",
-        tanggal_kembali: "2024-01-19",
-        status: "completed",
-        keperluan: "Ujian Karyawan"
-      },
-      {
-        id: 7,
-        item: "Map Folder",
-        jumlah: "25 pcs",
-        peminjam: "Eko Prasetyo",
-        unit_kerja: "Bagian Keuangan",
-        tanggal_pinjam: "2024-01-20",
-        tanggal_kembali: "2024-01-24",
-        status: "active",
-        keperluan: "Arsip Laporan"
-      },
-      {
-        id: 8,
-        item: "Tinta Printer",
-        jumlah: "4 cartridge",
-        peminjam: "Fitri Ayu",
-        unit_kerja: "Bagian IT",
-        tanggal_pinjam: "2024-01-21",
-        tanggal_kembali: "2024-01-25",
-        status: "pending",
-        keperluan: "Print Dokumen"
-      },
-      {
-        id: 9,
-        item: "Kalkulator",
-        jumlah: "2 pcs",
-        peminjam: "Gunawan",
-        unit_kerja: "Bagian Keuangan",
-        tanggal_pinjam: "2024-01-22",
-        tanggal_kembali: "2024-01-22",
-        status: "completed",
-        keperluan: "Perhitungan Budget"
-      },
-      {
-        id: 10,
-        item: "Pensil Warna",
-        jumlah: "12 set",
-        peminjam: "Hani Sari",
-        unit_kerja: "Bagian Marketing",
-        tanggal_pinjam: "2024-01-23",
-        tanggal_kembali: "2024-01-26",
-        status: "active",
-        keperluan: "Presentasi Visual"
-      },
-      {
-        id: 11,
-        item: "Kertas Karton",
-        jumlah: "20 lembar",
-        peminjam: "Indra Kurniawan",
-        unit_kerja: "Bagian Marketing",
-        tanggal_pinjam: "2024-01-24",
-        tanggal_kembali: "2024-01-27",
-        status: "pending",
-        keperluan: "Banner Promosi"
-      },
-      {
-        id: 12,
-        item: "Lem Kertas",
-        jumlah: "5 pcs",
-        peminjam: "Joko Widodo",
-        unit_kerja: "Bagian Admin",
-        tanggal_pinjam: "2024-01-25",
-        tanggal_kembali: "2024-01-25",
-        status: "completed",
-        keperluan: "Dokumentasi Manual"
-      },
-      {
-        id: 13,
-        item: "Pensil Mekanik",
-        jumlah: "15 pcs",
-        peminjam: "Kartika Sari",
-        unit_kerja: "Bagian IT",
-        tanggal_pinjam: "2024-01-26",
-        tanggal_kembali: "2024-01-29",
-        status: "active",
-        keperluan: "Sketsa Sistem"
-      },
-      {
-        id: 14,
-        item: "Kertas Manila",
-        jumlah: "30 lembar",
-        peminjam: "Lina Marlina",
-        unit_kerja: "Bagian Training",
-        tanggal_pinjam: "2024-01-27",
-        tanggal_kembali: "2024-01-30",
-        status: "pending",
-        keperluan: "Flipchart Training"
-      },
-      {
-        id: 15,
-        item: "Penghapus",
-        jumlah: "20 pcs",
-        peminjam: "Muhammad Ali",
-        unit_kerja: "Bagian HRD",
-        tanggal_pinjam: "2024-01-28",
-        tanggal_kembali: "2024-01-28",
-        status: "completed",
-        keperluan: "Koreksi Formulir"
-      },
-      {
-        id: 16,
-        item: "Spidol Permanent",
-        jumlah: "10 pcs",
-        peminjam: "Nina Sari",
-        unit_kerja: "Bagian Marketing",
-        tanggal_pinjam: "2024-01-29",
-        tanggal_kembali: "2024-02-01",
-        status: "active",
-        keperluan: "Label Produk"
-      },
-      {
-        id: 17,
-        item: "Kertas Stiker",
-        jumlah: "50 lembar",
-        peminjam: "Oscar Pratama",
-        unit_kerja: "Bagian Operations",
-        tanggal_pinjam: "2024-01-30",
-        tanggal_kembali: "2024-02-02",
-        status: "pending",
-        keperluan: "Label Inventory"
-      },
-      {
-        id: 18,
-        item: "Pensil HB",
-        jumlah: "30 pcs",
-        peminjam: "Putri Maharani",
-        unit_kerja: "Bagian IT",
-        tanggal_pinjam: "2024-01-31",
-        tanggal_kembali: "2024-01-31",
-        status: "completed",
-        keperluan: "Sketsa Database"
-      },
-      {
-        id: 19,
-        item: "Kertas Origami",
-        jumlah: "100 lembar",
-        peminjam: "Qori Sandria",
-        unit_kerja: "Bagian Sales",
-        tanggal_pinjam: "2024-02-01",
-        tanggal_kembali: "2024-02-03",
-        status: "active",
-        keperluan: "Dekorasi Event"
-      },
-      {
-        id: 20,
-        item: "Pensil Warna",
-        jumlah: "24 set",
-        peminjam: "Rizki Pratama",
-        unit_kerja: "Bagian Marketing",
-        tanggal_pinjam: "2024-02-02",
-        tanggal_kembali: "2024-02-05",
-        status: "pending",
-        keperluan: "Desain Kreatif"
-      },
-      {
-        id: 21,
-        item: "Kertas Kado",
-        jumlah: "40 lembar",
-        peminjam: "Sari Dewi",
-        unit_kerja: "Bagian HRD",
-        tanggal_pinjam: "2024-02-03",
-        tanggal_kembali: "2024-02-03",
-        status: "completed",
-        keperluan: "Hadiah Karyawan"
-      },
-      {
-        id: 22,
-        item: "Pensil Conte",
-        jumlah: "8 set",
-        peminjam: "Tono Wijaya",
-        unit_kerja: "Bagian IT",
-        tanggal_pinjam: "2024-02-04",
-        tanggal_kembali: "2024-02-06",
-        status: "active",
-        keperluan: "Sketsa Teknis"
+      if (msg.type === "atkPinjamUpdated") {
+        getAtk(); // Trigger refresh polling untuk ATK
       }
-    ]
-
-    // Sample data for equipment bookings
-    const sampleEquipmentBookings = [
-      {
-        id: 1,
-        alat: "Laptop Dell",
-        spesifikasi: "i7, 16GB RAM",
-        peminjam: "Andi Wijaya",
-        unit_kerja: "Bagian IT",
-        tanggal_pinjam: "2024-01-15",
-        tanggal_kembali: "2024-01-17",
-        status: "active",
-        keperluan: "Maintenance Server"
-      },
-      {
-        id: 2,
-        alat: "Proyektor Epson",
-        spesifikasi: "3000 Lumens",
-        peminjam: "Eka Putri",
-        unit_kerja: "Bagian Training",
-        tanggal_pinjam: "2024-01-16",
-        tanggal_kembali: "2024-01-16",
-        status: "pending",
-        keperluan: "Presentasi Training"
-      },
-      {
-        id: 3,
-        alat: "Printer Canon",
-        spesifikasi: "Laser Multifungsi",
-        peminjam: "Fajar Nugroho",
-        unit_kerja: "Bagian Keuangan",
-        tanggal_pinjam: "2024-01-13",
-        tanggal_kembali: "2024-01-13",
-        status: "completed",
-        keperluan: "Print Laporan Bulanan"
-      },
-      {
-        id: 4,
-        alat: "Monitor Samsung",
-        spesifikasi: "24 inch 4K",
-        peminjam: "Gita Sari",
-        unit_kerja: "Bagian IT",
-        tanggal_pinjam: "2024-01-17",
-        tanggal_kembali: "2024-01-19",
-        status: "active",
-        keperluan: "Development Work"
-      },
-      {
-        id: 5,
-        alat: "Kamera Canon",
-        spesifikasi: "DSLR EOS 80D",
-        peminjam: "Hendra Pratama",
-        unit_kerja: "Bagian Marketing",
-        tanggal_pinjam: "2024-01-18",
-        tanggal_kembali: "2024-01-20",
-        status: "pending",
-        keperluan: "Foto Produk"
-      },
-      {
-        id: 6,
-        alat: "Scanner HP",
-        spesifikasi: "A4 Flatbed",
-        peminjam: "Indira Sari",
-        unit_kerja: "Bagian Admin",
-        tanggal_pinjam: "2024-01-19",
-        tanggal_kembali: "2024-01-19",
-        status: "completed",
-        keperluan: "Digitalisasi Dokumen"
-      },
-      {
-        id: 7,
-        alat: "Router Cisco",
-        spesifikasi: "Gigabit Switch",
-        peminjam: "Joko Susilo",
-        unit_kerja: "Bagian IT",
-        tanggal_pinjam: "2024-01-20",
-        tanggal_kembali: "2024-01-22",
-        status: "active",
-        keperluan: "Network Setup"
-      },
-      {
-        id: 8,
-        alat: "Speaker JBL",
-        spesifikasi: "Bluetooth Portable",
-        peminjam: "Kartika Dewi",
-        unit_kerja: "Bagian Training",
-        tanggal_pinjam: "2024-01-21",
-        tanggal_kembali: "2024-01-23",
-        status: "pending",
-        keperluan: "Presentasi Audio"
-      },
-      {
-        id: 9,
-        alat: "Tablet iPad",
-        spesifikasi: "Pro 12.9 inch",
-        peminjam: "Lina Marlina",
-        unit_kerja: "Bagian Marketing",
-        tanggal_pinjam: "2024-01-22",
-        tanggal_kembali: "2024-01-22",
-        status: "completed",
-        keperluan: "Demo Produk"
-      },
-      {
-        id: 10,
-        alat: "Server HP",
-        spesifikasi: "ProLiant DL380",
-        peminjam: "Muhammad Ali",
-        unit_kerja: "Bagian IT",
-        tanggal_pinjam: "2024-01-23",
-        tanggal_kembali: "2024-01-25",
-        status: "active",
-        keperluan: "Data Center Setup"
-      },
-      {
-        id: 11,
-        alat: "Mikrofon Shure",
-        spesifikasi: "SM58 Dynamic",
-        peminjam: "Nina Sari",
-        unit_kerja: "Bagian Training",
-        tanggal_pinjam: "2024-01-24",
-        tanggal_kembali: "2024-01-26",
-        status: "pending",
-        keperluan: "Recording Training"
-      },
-      {
-        id: 12,
-        alat: "UPS APC",
-        spesifikasi: "1500VA",
-        peminjam: "Oscar Pratama",
-        unit_kerja: "Bagian IT",
-        tanggal_pinjam: "2024-01-25",
-        tanggal_kembali: "2024-01-25",
-        status: "completed",
-        keperluan: "Backup Power"
-      },
-      {
-        id: 13,
-        alat: "Webcam Logitech",
-        spesifikasi: "4K Pro",
-        peminjam: "Putri Maharani",
-        unit_kerja: "Bagian HRD",
-        tanggal_pinjam: "2024-01-26",
-        tanggal_kembali: "2024-01-28",
-        status: "active",
-        keperluan: "Video Conference"
-      },
-      {
-        id: 14,
-        alat: "Drone DJI",
-        spesifikasi: "Mavic Air 2",
-        peminjam: "Qori Sandria",
-        unit_kerja: "Bagian Marketing",
-        tanggal_pinjam: "2024-01-27",
-        tanggal_kembali: "2024-01-29",
-        status: "pending",
-        keperluan: "Aerial Photography"
-      },
-      {
-        id: 15,
-        alat: "Harddisk External",
-        spesifikasi: "2TB SSD",
-        peminjam: "Rizki Pratama",
-        unit_kerja: "Bagian IT",
-        tanggal_pinjam: "2024-01-28",
-        tanggal_kembali: "2024-01-28",
-        status: "completed",
-        keperluan: "Data Backup"
-      },
-      {
-        id: 16,
-        alat: "Smartboard",
-        spesifikasi: "75 inch Interactive",
-        peminjam: "Sari Dewi",
-        unit_kerja: "Bagian Training",
-        tanggal_pinjam: "2024-01-29",
-        tanggal_kembali: "2024-01-31",
-        status: "active",
-        keperluan: "Interactive Training"
-      },
-      {
-        id: 17,
-        alat: "3D Printer",
-        spesifikasi: "Creality Ender 3",
-        peminjam: "Tono Wijaya",
-        unit_kerja: "Bagian R&D",
-        tanggal_pinjam: "2024-01-30",
-        tanggal_kembali: "2024-02-01",
-        status: "pending",
-        keperluan: "Prototype Development"
-      },
-      {
-        id: 18,
-        alat: "Oscilloscope",
-        spesifikasi: "Tektronix TBS1000",
-        peminjam: "Umi Kalsum",
-        unit_kerja: "Bagian Engineering",
-        tanggal_pinjam: "2024-01-31",
-        tanggal_kembali: "2024-01-31",
-        status: "completed",
-        keperluan: "Circuit Testing"
-      },
-      {
-        id: 19,
-        alat: "VR Headset",
-        spesifikasi: "Oculus Quest 2",
-        peminjam: "Vina Panduwinata",
-        unit_kerja: "Bagian Training",
-        tanggal_pinjam: "2024-02-01",
-        tanggal_kembali: "2024-02-03",
-        status: "active",
-        keperluan: "VR Training"
-      },
-      {
-        id: 20,
-        alat: "Multimeter",
-        spesifikasi: "Fluke 87V",
-        peminjam: "Wahyu Nugroho",
-        unit_kerja: "Bagian Maintenance",
-        tanggal_pinjam: "2024-02-02",
-        tanggal_kembali: "2024-02-04",
-        status: "pending",
-        keperluan: "Electrical Testing"
-      },
-      {
-        id: 21,
-        alat: "Generator",
-        spesifikasi: "Honda EU2200i",
-        peminjam: "Xena Putri",
-        unit_kerja: "Bagian Operations",
-        tanggal_pinjam: "2024-02-03",
-        tanggal_kembali: "2024-02-03",
-        status: "completed",
-        keperluan: "Emergency Power"
-      },
-      {
-        id: 22,
-        alat: "Laser Cutter",
-        spesifikasi: "Epilog Mini 24",
-        peminjam: "Yoga Pratama",
-        unit_kerja: "Bagian R&D",
-        tanggal_pinjam: "2024-02-04",
-        tanggal_kembali: "2024-02-06",
-        status: "active",
-        keperluan: "Prototype Cutting"
+      if (msg.type === "pinbarUpdated") {
+        getPinjamAlat(); // Trigger refresh polling untuk Pinjam Alat
       }
-    ]
-
-    // Simulate API calls
-    const fetchData = async () => {
-      setLoading(true)
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      setRoomBookings(sampleRoomBookings)
-      setAtkRequests(sampleAtkRequests)
-      setEquipmentBookings(sampleEquipmentBookings)
-      setLoading(false)
-    }
-    fetchData()
-  }, [])
-
+    };
+    ws.onclose = () => {
+      console.log("WebSocket Disconnected");
+    };
+    return () => {
+      ws.close();
+    };
+  }, [getRuangan, getAtk, getPinjamAlat]);
   // Update current time every minute
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentTime(dayjs())
-    }, 60000)
-    return () => clearInterval(interval)
-  }, [])
+      setCurrentTime(dayjs());
+    }, 60000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Fungsi untuk menentukan status berdasarkan waktu
+  const getStatusByTime = (tanggalPinjam, waktuMulai, waktuSelesai) => {
+    if (!tanggalPinjam || (!waktuMulai && !waktuSelesai)) {
+      return null; // Tidak bisa menentukan status jika tidak ada tanggal/waktu
+    }
+
+    const now = dayjs();
+    const tanggal = dayjs(tanggalPinjam);
+
+    // Jika ada waktu mulai dan selesai, gabungkan dengan tanggal
+    let waktuStart = null;
+    let waktuEnd = null;
+
+    if (waktuMulai) {
+      const [jamMulai, menitMulai] = waktuMulai.split(":");
+      waktuStart = tanggal
+        .hour(parseInt(jamMulai) || 0)
+        .minute(parseInt(menitMulai) || 0)
+        .second(0);
+    }
+
+    if (waktuSelesai) {
+      const [jamSelesai, menitSelesai] = waktuSelesai.split(":");
+      waktuEnd = tanggal
+        .hour(parseInt(jamSelesai) || 23)
+        .minute(parseInt(menitSelesai) || 59)
+        .second(59);
+    }
+
+    // Jika waktu selesai sudah lewat
+    if (waktuEnd && now.isAfter(waktuEnd)) {
+      return "selesai";
+    }
+
+    // Jika sedang berlangsung (waktu sekarang di antara waktu mulai dan selesai)
+    if (
+      waktuStart &&
+      waktuEnd &&
+      now.isAfter(waktuStart) &&
+      now.isBefore(waktuEnd)
+    ) {
+      return "on going";
+    }
+
+    // Jika waktu mulai belum tiba
+    if (waktuStart && now.isBefore(waktuStart)) {
+      return "coming soon";
+    }
+
+    // Fallback: jika hanya ada tanggal tanpa waktu, cek berdasarkan tanggal saja
+    if (!waktuStart && !waktuEnd) {
+      if (now.isAfter(tanggal.endOf("day"))) {
+        return "selesai";
+      } else if (now.isBefore(tanggal.startOf("day"))) {
+        return "coming soon";
+      } else {
+        return "on going";
+      }
+    }
+
+    return null;
+  };
 
   const getStatusColor = (status) => {
-    switch (status) {
-      case 'active': return 'text-green-600 bg-green-100'
-      case 'pending': return 'text-yellow-600 bg-yellow-100'
-      case 'completed': return 'text-blue-600 bg-blue-100'
-      case 'cancelled': return 'text-red-600 bg-red-100'
-      default: return 'text-gray-600 bg-gray-100'
+    const statusLower = String(status).toLowerCase();
+    switch (statusLower) {
+      case "active":
+      case "aktif":
+      case "approved":
+      case "disetujui":
+      case "on going":
+      case "ongoing":
+        return "text-green-600 bg-green-100";
+      case "pending":
+      case "menunggu":
+      case "waiting":
+      case "coming soon":
+        return "text-yellow-600 bg-yellow-100";
+      case "completed":
+      case "selesai":
+      case "done":
+      case "finished":
+        return "text-blue-600 bg-blue-100";
+      case "cancelled":
+      case "dibatalkan":
+      case "canceled":
+        return "text-red-600 bg-red-100";
+      case "rejected":
+      case "ditolak":
+        return "text-red-600 bg-red-100";
+      case "belum kembali":
+      case "not returned":
+        return "text-orange-600 bg-orange-100";
+      case "proses peminjaman":
+      case "borrowing":
+        return "text-blue-600 bg-blue-100";
+      default:
+        return "text-gray-600 bg-gray-100";
     }
-  }
+  };
 
   const getStatusText = (status) => {
-    switch (status) {
-      case 'active': return 'AKTIF'
-      case 'pending': return 'MENUNGGU'
-      case 'completed': return 'SELESAI'
-      case 'cancelled': return 'DIBATALKAN'
-      default: return 'TIDAK DIKETAHUI'
+    const statusLower = String(status).toLowerCase();
+    switch (statusLower) {
+      case "active":
+      case "aktif":
+      case "approved":
+      case "disetujui":
+      case "on going":
+      case "ongoing":
+        return "BERLANGSUNG";
+      case "pending":
+      case "menunggu":
+      case "waiting":
+        return "MENUNGGU";
+      case "coming soon":
+        return "SEGERA";
+      case "completed":
+      case "selesai":
+      case "done":
+      case "finished":
+        return "SELESAI";
+      case "cancelled":
+      case "dibatalkan":
+      case "canceled":
+        return "DIBATALKAN";
+      case "rejected":
+      case "ditolak":
+        return "DITOLAK";
+      case "belum kembali":
+      case "not returned":
+        return "BELUM KEMBALI";
+      case "proses peminjaman":
+      case "borrowing":
+        return "PROSES PINJAM";
+      default:
+        return "BELUM KEMBALI";
     }
-  }
+  };
 
   const getStatusIcon = (status) => {
-    switch (status) {
-      case 'active': return <CheckCircle className="w-4 h-4" />
-      case 'pending': return <Clock className="w-4 h-4" />
-      case 'completed': return <RotateCcw className="w-4 h-4" />
-      case 'cancelled': return <XCircle className="w-4 h-4" />
-      default: return <AlertTriangle className="w-4 h-4" />
+    const statusLower = String(status).toLowerCase();
+    switch (statusLower) {
+      case "active":
+      case "aktif":
+      case "approved":
+      case "disetujui":
+      case "on going":
+      case "ongoing":
+        return <CheckCircle className="w-4 h-4" />;
+      case "pending":
+      case "menunggu":
+      case "waiting":
+      case "coming soon":
+        return <Clock className="w-4 h-4" />;
+      case "completed":
+      case "selesai":
+      case "done":
+      case "finished":
+        return <RotateCcw className="w-4 h-4" />;
+      case "cancelled":
+      case "dibatalkan":
+      case "canceled":
+      case "rejected":
+      case "ditolak":
+        return <XCircle className="w-4 h-4" />;
+      case "belum kembali":
+      case "not returned":
+        return <AlertTriangle className="w-4 h-4" />;
+      case "proses peminjaman":
+      case "borrowing":
+        return <Clock className="w-4 h-4" />;
+      default:
+        return <AlertTriangle className="w-4 h-4" />;
     }
-  }
+  };
 
   const getStatusBorderColor = (status) => {
-    switch (status) {
-      case 'active': return 'border-l-green-500'
-      case 'pending': return 'border-l-yellow-500'
-      case 'completed': return 'border-l-blue-500'
-      case 'cancelled': return 'border-l-red-500'
-      default: return 'border-l-gray-500'
+    const statusLower = String(status).toLowerCase();
+    switch (statusLower) {
+      case "active":
+      case "aktif":
+      case "approved":
+      case "disetujui":
+      case "on going":
+      case "ongoing":
+        return "border-l-green-500";
+      case "pending":
+      case "menunggu":
+      case "waiting":
+      case "coming soon":
+        return "border-l-yellow-500";
+      case "completed":
+      case "selesai":
+      case "done":
+      case "finished":
+        return "border-l-blue-500";
+      case "cancelled":
+      case "dibatalkan":
+      case "canceled":
+      case "rejected":
+      case "ditolak":
+        return "border-l-red-500";
+      case "belum kembali":
+      case "not returned":
+        return "border-l-orange-500";
+      case "proses peminjaman":
+      case "borrowing":
+        return "border-l-blue-500";
+      default:
+        return "border-l-gray-500";
     }
-  }
+  };
 
   if (loading) {
     return (
@@ -856,11 +336,15 @@ const Peminjaman = () => {
             animate={{ rotate: 360 }}
             transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
           />
-          <h2 className="text-2xl font-bold text-white mb-2">Loading Peminjaman...</h2>
-          <p className="text-gray-300">Please wait while we fetch the latest data</p>
+          <h2 className="text-2xl font-bold text-white mb-2">
+            Loading Peminjaman...
+          </h2>
+          <p className="text-gray-300">
+            Please wait while we fetch the latest data
+          </p>
         </motion.div>
       </div>
-    )
+    );
   }
 
   return (
@@ -875,15 +359,17 @@ const Peminjaman = () => {
               </div>
               <div>
                 <h1 className="text-3xl font-bold text-white">Peminjaman</h1>
-                <p className="text-purple-200">IT, LAB, DAN SARANA DAN PRASARANA</p>
+                <p className="text-purple-200">
+                  IT, LAB, DAN SARANA DAN PRASARANA
+                </p>
               </div>
             </div>
             <div className="text-right">
               <div className="text-2xl font-bold text-white">
-                {currentTime.format('HH:mm')}
+                {currentTime.format("HH:mm")}
               </div>
               <div className="text-purple-200">
-                {currentTime.format('dddd, DD MMMM YYYY')}
+                {currentTime.format("dddd, DD MMMM YYYY")}
               </div>
             </div>
           </div>
@@ -893,79 +379,181 @@ const Peminjaman = () => {
       {/* Main Content - 3 Columns */}
       <div className="w-full mx-auto px-4 py-4 h-[calc(100vh-100px)] overflow-hidden">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 h-full">
-          
           {/* Room Bookings Column */}
           <div className="bg-white/5 backdrop-blur-sm rounded-xl p-3 border border-white/10">
             <div className="flex items-center space-x-2 mb-3">
               <Building2 className="w-5 h-5 text-blue-400" />
-              <h2 className="text-lg font-bold text-white">Peminjaman Ruangan</h2>
+              <h2 className="text-lg font-bold text-white">
+                Peminjaman Ruangan
+              </h2>
             </div>
             <div className="grid grid-cols-2 gap-2 h-[calc(100%-50px)] overflow-y-auto">
               <AnimatePresence>
-                {roomBookings.map((booking, index) => (
+                {ruangan.length === 0 && !loading ? (
+                  <div className="col-span-2 text-center text-gray-400 py-8">
+                    <p>Tidak ada data peminjaman ruangan</p>
+                  </div>
+                ) : (
+                  ruangan.map((booking, index) => {
+                    // Mapping data dari API ke format yang diharapkan
+                    const ruanganNama =
+                      booking.ruangan ||
+                      booking.nama_ruangan ||
+                      booking.ruangan_nama ||
+                      "-";
+                    const peminjam =
+                      booking.peminjam ||
+                      booking.nama_peminjam ||
+                      booking.user_nama ||
+                      "-";
+                    const tanggalPinjam =
+                      booking.tgl ||
+                      booking.tanggal ||
+                      booking.tgl_pinjam ||
+                      "";
+                    const waktuMulai =
+                      booking.waktu_mulai ||
+                      booking.jam_mulai ||
+                      booking.waktu_start ||
+                      "";
+                    const waktuSelesai =
+                      booking.waktu_selesai ||
+                      booking.jam_selesai ||
+                      booking.waktu_end ||
+                      "";
+                    const keperluan =
+                      booking.kegiatan ||
+                      booking.keterangan ||
+                      booking.alasan ||
+                      "-";
+
+                    // Tentukan status berdasarkan waktu atau dari API
+                    const statusByTime = getStatusByTime(
+                      tanggalPinjam,
+                      waktuMulai,
+                      waktuSelesai
+                    );
+                    const statusFromApi =
+                      booking.status || booking.status_peminjaman;
+                    // Prioritaskan status berdasarkan waktu jika tersedia, jika tidak gunakan dari API
+                    const status = statusByTime || statusFromApi || "pending";
+
+                    return (
                   <motion.div
-                    key={booking.id}
+                        key={booking.id || booking.id_peminjaman || index}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ 
                       opacity: 1, 
                       y: 0,
-                      ...(booking.status === 'active' ? {
+                          ...(status === "active" ||
+                          status === "aktif" ||
+                          status === "approved" ||
+                          status === "on going" ||
+                          status === "ongoing"
+                            ? {
                         boxShadow: [
                           "0 0 0px rgba(34, 197, 94, 0.3)",
                           "0 0 10px rgba(34, 197, 94, 0.6)",
-                          "0 0 0px rgba(34, 197, 94, 0.3)"
-                        ]
-                      } : {})
+                                  "0 0 0px rgba(34, 197, 94, 0.3)",
+                                ],
+                              }
+                            : {}),
                     }}
                     exit={{ opacity: 0, y: -20 }}
                     transition={{ 
                       duration: 0.2, 
                       delay: index * 0.02,
-                      ...(booking.status === 'active' ? {
+                          ...(status === "active" ||
+                          status === "aktif" ||
+                          status === "approved" ||
+                          status === "on going" ||
+                          status === "ongoing"
+                            ? {
                         boxShadow: {
                           duration: 2,
                           repeat: Infinity,
-                          ease: "easeInOut"
+                                  ease: "easeInOut",
+                                },
                         }
-                      } : {})
+                            : {}),
                     }}
-                    className={`bg-white/10 backdrop-blur-sm border-l-3 ${getStatusBorderColor(booking.status)} rounded-md p-2 hover:bg-white/20 transition-all duration-300`}
+                        className={`bg-white/10 backdrop-blur-sm border-l-3 ${getStatusBorderColor(
+                          status
+                        )} rounded-md p-2 hover:bg-white/20 transition-all duration-300`}
                   >
                     <div className="flex items-center justify-between mb-1">
-                      <h3 className="text-xs font-bold text-white truncate">{booking.ruangan}</h3>
+                          <h3 className="text-xs font-bold text-white truncate">
+                            {ruanganNama}
+                          </h3>
                       <motion.span 
-                        className={`px-1.5 py-0.5 rounded-full text-xs font-semibold flex items-center space-x-1 ${getStatusColor(booking.status)}`}
-                        animate={booking.status === 'active' ? {
+                            className={`px-1.5 py-0.5 rounded-full text-xs font-semibold flex items-center space-x-1 ${getStatusColor(
+                              status
+                            )}`}
+                            animate={
+                              status === "active" ||
+                              status === "aktif" ||
+                              status === "approved" ||
+                              status === "on going" ||
+                              status === "ongoing"
+                                ? {
                           opacity: [1, 0.3, 1],
-                          scale: [1, 1.05, 1]
-                        } : {}}
-                        transition={booking.status === 'active' ? {
+                                    scale: [1, 1.05, 1],
+                                  }
+                                : {}
+                            }
+                            transition={
+                              status === "active" ||
+                              status === "aktif" ||
+                              status === "approved" ||
+                              status === "on going" ||
+                              status === "ongoing"
+                                ? {
                           duration: 1.5,
                           repeat: Infinity,
-                          ease: "easeInOut"
-                        } : {}}
-                      >
-                        {getStatusIcon(booking.status)}
-                        <span className="hidden sm:inline">{getStatusText(booking.status)}</span>
+                                    ease: "easeInOut",
+                                  }
+                                : {}
+                            }
+                          >
+                            {getStatusIcon(status)}
+                            <span className="hidden sm:inline">
+                              {getStatusText(status)}
+                            </span>
                       </motion.span>
                     </div>
                     <div className="space-y-0.5 text-xs text-gray-300">
                       <div className="flex items-center space-x-1">
                         <User className="w-2.5 h-2.5 text-blue-400 flex-shrink-0" />
-                        <span className="truncate text-xs">{booking.peminjam}</span>
+                            <span className="truncate text-xs">{peminjam}</span>
                       </div>
+                          {tanggalPinjam && (
                       <div className="flex items-center space-x-1">
                         <Calendar className="w-2.5 h-2.5 text-green-400 flex-shrink-0" />
-                        <span className="text-xs">{dayjs(booking.tanggal_pinjam).format('DD/MM')}</span>
+                              <span className="text-xs">
+                                {dayjs(tanggalPinjam).format("DD/MM")}
+                              </span>
                       </div>
+                          )}
+                          {(waktuMulai || waktuSelesai) && (
                       <div className="flex items-center space-x-1">
                         <Clock className="w-2.5 h-2.5 text-purple-400 flex-shrink-0" />
-                        <span className="text-xs">{booking.waktu_mulai}-{booking.waktu_selesai}</span>
+                              <span className="text-xs">
+                                {waktuMulai}
+                                {waktuMulai && waktuSelesai ? "-" : ""}
+                                {waktuSelesai}
+                              </span>
                       </div>
-                      <div className="text-gray-400 truncate text-xs">{booking.keperluan}</div>
+                          )}
+                          {keperluan && (
+                            <div className="text-gray-400 truncate text-xs">
+                              {keperluan}
+                            </div>
+                          )}
                     </div>
                   </motion.div>
-                ))}
+                    );
+                  })
+                )}
               </AnimatePresence>
             </div>
           </div>
@@ -978,70 +566,90 @@ const Peminjaman = () => {
             </div>
             <div className="grid grid-cols-2 gap-2 h-[calc(100%-50px)] overflow-y-auto">
               <AnimatePresence>
-                {atkRequests.map((request, index) => (
+                {atk.length === 0 && !loading ? (
+                  <div className="col-span-2 text-center text-gray-400 py-8">
+                    <p>Tidak ada data pengambilan ATK</p>
+                  </div>
+                ) : (
+                  atk.map((request, index) => {
+                    // Mapping data dari API ke format yang diharapkan
+                    const jumlah = request.vol || request.qty || request.quantity || "-";
+                    const peminjam = request.pengambil|| request.nama_peminjam || request.user_nama || "-";
+                    const tanggalPinjam = request.tanggal_pinjam || request.tanggal || request.tgl || request.tgl_pinjam || "";
+                    const keperluan = request.peruntukan || request.keterangan || request.alasan || "-";
+                    const status = request.status || request.status_pengambilan || "pending";
+
+                    return (
                   <motion.div
-                    key={request.id}
+                        key={request.id || request.id_pengambilan || index}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ 
                       opacity: 1, 
                       y: 0,
-                      ...(request.status === 'active' ? {
+                          ...(status === "active" ||
+                          status === "aktif" ||
+                          status === "approved" ||
+                          status === "disetujui"
+                            ? {
                         boxShadow: [
                           "0 0 0px rgba(34, 197, 94, 0.3)",
                           "0 0 10px rgba(34, 197, 94, 0.6)",
-                          "0 0 0px rgba(34, 197, 94, 0.3)"
-                        ]
-                      } : {})
+                                  "0 0 0px rgba(34, 197, 94, 0.3)",
+                                ],
+                              }
+                            : {}),
                     }}
                     exit={{ opacity: 0, y: -20 }}
                     transition={{ 
                       duration: 0.2, 
                       delay: index * 0.02,
-                      ...(request.status === 'active' ? {
+                          ...(status === "active" ||
+                          status === "aktif" ||
+                          status === "approved" ||
+                          status === "disetujui"
+                            ? {
                         boxShadow: {
                           duration: 2,
                           repeat: Infinity,
-                          ease: "easeInOut"
+                                  ease: "easeInOut",
+                                },
                         }
-                      } : {})
+                            : {}),
                     }}
-                    className={`bg-white/10 backdrop-blur-sm border-l-3 ${getStatusBorderColor(request.status)} rounded-md p-2 hover:bg-white/20 transition-all duration-300`}
+                        className={`bg-white/10 backdrop-blur-sm border-l-3 ${getStatusBorderColor(
+                          status
+                        )} rounded-md p-2 hover:bg-white/20 transition-all duration-300`}
                   >
-                    <div className="flex items-center justify-between mb-1">
-                      <h3 className="text-xs font-bold text-white truncate">{request.item}</h3>
-                      <motion.span 
-                        className={`px-1.5 py-0.5 rounded-full text-xs font-semibold flex items-center space-x-1 ${getStatusColor(request.status)}`}
-                        animate={request.status === 'active' ? {
-                          opacity: [1, 0.3, 1],
-                          scale: [1, 1.05, 1]
-                        } : {}}
-                        transition={request.status === 'active' ? {
-                          duration: 1.5,
-                          repeat: Infinity,
-                          ease: "easeInOut"
-                        } : {}}
-                      >
-                        {getStatusIcon(request.status)}
-                        <span className="hidden sm:inline">{getStatusText(request.status)}</span>
-                      </motion.span>
-                    </div>
+                    
                     <div className="space-y-0.5 text-xs text-gray-300">
                       <div className="flex items-center space-x-1">
                         <User className="w-2.5 h-2.5 text-blue-400 flex-shrink-0" />
-                        <span className="truncate text-xs">{request.peminjam}</span>
+                            <span className="truncate text-xs">
+                              {peminjam}
+                            </span>
                       </div>
                       <div className="flex items-center space-x-1">
                         <Package className="w-2.5 h-2.5 text-orange-400 flex-shrink-0" />
-                        <span className="text-xs">{request.jumlah}</span>
+                            <span className="text-xs">{jumlah}</span>
                       </div>
+                          {tanggalPinjam && (
                       <div className="flex items-center space-x-1">
                         <Calendar className="w-2.5 h-2.5 text-green-400 flex-shrink-0" />
-                        <span className="text-xs">{dayjs(request.tanggal_pinjam).format('DD/MM')}</span>
+                              <span className="text-xs">
+                                {dayjs(tanggalPinjam).format("DD/MM")}
+                              </span>
                       </div>
-                      <div className="text-gray-400 truncate text-xs">{request.keperluan}</div>
+                          )}
+                          {keperluan && (
+                            <div className="text-gray-400 truncate text-xs">
+                              {keperluan}
+                            </div>
+                          )}
                     </div>
                   </motion.div>
-                ))}
+                    );
+                  })
+                )}
               </AnimatePresence>
             </div>
           </div>
@@ -1054,78 +662,142 @@ const Peminjaman = () => {
             </div>
             <div className="grid grid-cols-2 gap-2 h-[calc(100%-50px)] overflow-y-auto">
               <AnimatePresence>
-                {equipmentBookings.map((booking, index) => (
+                {pinjamAlat.length === 0 && !loading ? (
+                  <div className="col-span-2 text-center text-gray-400 py-8">
+                    <p>Tidak ada data peminjaman alat</p>
+                  </div>
+                ) : (
+                  pinjamAlat.map((booking, index) => {
+                    // Mapping data dari API ke format yang diharapkan
+                    const alat = booking.nabar || "-";
+                    const spesifikasi = booking.spesifikasi || booking.spek || booking.deskripsi || "-";
+                    const peminjam = booking.name || "-";
+                    const tanggalPinjam = booking.tgl_pinjam || "";
+                    const tanggalKembali = booking.tgl_kembali || null;
+                    const keperluan = booking.peruntukan || booking.keterangan || booking.alasan || "-";
+                    
+                    // Tentukan status berdasarkan tanggal kembali
+                    // Jika tanggal kembali terisi = "selesai", jika tidak terisi = "belum kembali"
+                    const status = tanggalKembali && tanggalKembali !== null && tanggalKembali !== "" 
+                      ? "selesai" 
+                      : "belum kembali";
+
+                    return (
                   <motion.div
-                    key={booking.id}
+                        key={booking.id || booking.id_peminjaman || index}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ 
                       opacity: 1, 
                       y: 0,
-                      ...(booking.status === 'active' ? {
+                          ...(status === "active" ||
+                          status === "aktif" ||
+                          status === "approved" ||
+                          status === "disetujui" ||
+                          status === "proses peminjaman"
+                            ? {
                         boxShadow: [
                           "0 0 0px rgba(34, 197, 94, 0.3)",
                           "0 0 10px rgba(34, 197, 94, 0.6)",
-                          "0 0 0px rgba(34, 197, 94, 0.3)"
-                        ]
-                      } : {})
+                                  "0 0 0px rgba(34, 197, 94, 0.3)",
+                                ],
+                              }
+                            : {}),
                     }}
                     exit={{ opacity: 0, y: -20 }}
                     transition={{ 
                       duration: 0.2, 
                       delay: index * 0.02,
-                      ...(booking.status === 'active' ? {
+                          ...(status === "active" ||
+                          status === "aktif" ||
+                          status === "approved" ||
+                          status === "disetujui" ||
+                          status === "proses peminjaman"
+                            ? {
                         boxShadow: {
                           duration: 2,
                           repeat: Infinity,
-                          ease: "easeInOut"
+                                  ease: "easeInOut",
+                                },
                         }
-                      } : {})
+                            : {}),
                     }}
-                    className={`bg-white/10 backdrop-blur-sm border-l-3 ${getStatusBorderColor(booking.status)} rounded-md p-2 hover:bg-white/20 transition-all duration-300`}
+                        className={`bg-white/10 backdrop-blur-sm border-l-3 ${getStatusBorderColor(
+                          status
+                        )} rounded-md p-2 hover:bg-white/20 transition-all duration-300`}
                   >
                     <div className="flex items-center justify-between mb-1">
-                      <h3 className="text-xs font-bold text-white truncate">{booking.alat}</h3>
+                          <h3 className="text-xs font-bold text-white truncate">
+                            {alat}
+                          </h3>
                       <motion.span 
-                        className={`px-1.5 py-0.5 rounded-full text-xs font-semibold flex items-center space-x-1 ${getStatusColor(booking.status)}`}
-                        animate={booking.status === 'active' ? {
+                            className={`px-1.5 py-0.5 rounded-full text-xs font-semibold flex items-center space-x-1 ${getStatusColor(
+                              status
+                            )}`}
+                            animate={
+                              status === "active" ||
+                              status === "aktif" ||
+                              status === "approved" ||
+                              status === "disetujui" ||
+                              status === "proses peminjaman"
+                                ? {
                           opacity: [1, 0.3, 1],
-                          scale: [1, 1.05, 1]
-                        } : {}}
-                        transition={booking.status === 'active' ? {
+                                    scale: [1, 1.05, 1],
+                                  }
+                                : {}
+                            }
+                            transition={
+                              status === "active" ||
+                              status === "aktif" ||
+                              status === "approved" ||
+                              status === "disetujui" ||
+                              status === "proses peminjaman"
+                                ? {
                           duration: 1.5,
                           repeat: Infinity,
-                          ease: "easeInOut"
-                        } : {}}
-                      >
-                        {getStatusIcon(booking.status)}
-                        <span className="hidden sm:inline">{getStatusText(booking.status)}</span>
+                                    ease: "easeInOut",
+                                  }
+                                : {}
+                            }
+                          >
+                            {getStatusIcon(status)}
+                            <span className="hidden sm:inline">
+                              {getStatusText(status)}
+                            </span>
                       </motion.span>
                     </div>
                     <div className="space-y-0.5 text-xs text-gray-300">
                       <div className="flex items-center space-x-1">
                         <User className="w-2.5 h-2.5 text-blue-400 flex-shrink-0" />
-                        <span className="truncate text-xs">{booking.peminjam}</span>
+                            <span className="truncate text-xs">
+                              {peminjam}
+                            </span>
                       </div>
-                      <div className="flex items-center space-x-1">
-                        <Wrench className="w-2.5 h-2.5 text-cyan-400 flex-shrink-0" />
-                        <span className="truncate text-xs">{booking.spesifikasi}</span>
-                      </div>
+                          
+                          {tanggalPinjam && (
                       <div className="flex items-center space-x-1">
                         <Calendar className="w-2.5 h-2.5 text-green-400 flex-shrink-0" />
-                        <span className="text-xs">{dayjs(booking.tanggal_pinjam).format('DD/MM')}</span>
+                              <span className="text-xs">
+                                {dayjs(tanggalPinjam).format("DD/MM")}
+                              </span>
                       </div>
-                      <div className="text-gray-400 truncate text-xs">{booking.keperluan}</div>
+                          )}
+                          {keperluan && (
+                            <div className="text-gray-400 truncate text-xs">
+                              {keperluan}
+                            </div>
+                          )}
                     </div>
                   </motion.div>
-                ))}
+                    );
+                  })
+                )}
               </AnimatePresence>
             </div>
           </div>
-
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Peminjaman
+export default Peminjaman;
