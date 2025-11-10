@@ -114,7 +114,7 @@ const Peminjaman = () => {
       getRuangan();
       getAtk();
       getPinjamAlat();
-    }, 10000); // 10 detik = 10000ms
+    }, 600000); // 1 menit = 10000ms
     return () => clearInterval(interval);
   }, [getRuangan, getAtk, getPinjamAlat]);
 
