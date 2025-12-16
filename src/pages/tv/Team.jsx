@@ -160,7 +160,7 @@ export default function Team() {
                       : ""
                   }
                   alt={currentMember?.nama || "Team Member"}
-                  className="absolute inset-0 w-full h-full object-cover"
+                  className="absolute inset-0 w-full h-auto object-cover"
                   initial={{ scale: 1.1 }}
                   animate={{ scale: 1 }}
                   transition={{ duration: 0.8 }}
