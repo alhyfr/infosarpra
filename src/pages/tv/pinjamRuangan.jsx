@@ -213,16 +213,16 @@ export default function PinjamRuangan() {
     }
 
     return (
-        <div className="h-full w-full bg-gradient-to-br from-slate-900 via-gray-900 to-slate-800 p-2 shadow-lg overflow-hidden flex flex-col font-sans">
+        <div className="h-full w-full bg-gradient-to-br from-slate-900 via-gray-900 to-slate-800 p-2 lg:p-4 shadow-lg overflow-hidden flex flex-col font-sans">
             {/* Header */}
-            <div className="flex justify-between items-center mb-4 border-b border-slate-100 pb-2 shadow-lg">
-                <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
-                    <HouseWifi className="text-white" size={24} />
+            <div className="flex justify-between items-center mb-2 lg:mb-4 border-b border-slate-100 pb-2 shadow-lg">
+                <h2 className="text-base lg:text-xl font-bold text-slate-800 flex items-center gap-2">
+                    <HouseWifi className="text-white" size={20} />
                     <span className="text-white">
                         Peminjaman Ruangan
                     </span>
                 </h2>
-                <span className="text-xs font-bold px-3 py-1 bg-slate-100 text-slate-500 rounded-full border border-slate-200">
+                <span className="text-xs lg:text-sm font-bold px-2 lg:px-3 py-1 bg-slate-100 text-slate-500 rounded-full border border-slate-200">
                     {dayjs().format('dddd, DD MMMM YYYY')}
                 </span>
             </div>
@@ -247,7 +247,7 @@ export default function PinjamRuangan() {
                                 {extendedLoans.map((loan, index) => (
                                     <div key={`${loan.id}-${index}`} className="relative">
                                         {/* MotoGP Style Card */}
-                                        <div className="relative flex flex-row h-20 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
+                                        <div className="relative flex flex-row h-16 lg:h-20 xl:h-24 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
                                             {/* Top Status Bar */}
                                             <div 
                                                 className={`absolute top-0 left-0 w-full h-1 ${
@@ -261,7 +261,7 @@ export default function PinjamRuangan() {
 
                                             {/* Left Section - Icon */}
                                             <div 
-                                                className={`w-16 flex items-center justify-center ${
+                                                className={`w-12 lg:w-16 flex items-center justify-center ${
                                                     loan.isActive
                                                         ? 'bg-red-500' 
                                                         : loan.status === 'Selesai'
@@ -269,35 +269,35 @@ export default function PinjamRuangan() {
                                                         : 'bg-amber-500'
                                                 }`}
                                             >
-                                                <Building2 className="text-white" size={32} strokeWidth={2.5} />
+                                                <Building2 className="text-white w-6 h-6 lg:w-8 lg:h-8" strokeWidth={2.5} />
                                             </div>
 
                                             {/* Right Section - Info */}
-                                            <div className="flex-1 bg-white p-2 flex flex-col justify-between">
+                                            <div className="flex-1 bg-white p-1.5 lg:p-2 xl:p-3 flex flex-col justify-between">
                                                 {/* Room Name */}
-                                                <h3 className="text-sm font-bold uppercase text-gray-800 truncate leading-tight">
+                                                <h3 className="text-xs lg:text-sm xl:text-base font-bold uppercase text-gray-800 truncate leading-tight">
                                                     {loan.room}
                                                 </h3>
 
                                                 {/* Activity */}
-                                                <p className="text-xs text-gray-600 truncate leading-tight">
+                                                <p className="text-[10px] lg:text-xs xl:text-sm text-gray-600 truncate leading-tight">
                                                     {loan.activity}
                                                 </p>
 
                                                 {/* Bottom Info Bar */}
-                                                <div className="flex items-center gap-2 text-gray-500">
+                                                <div className="flex items-center gap-1.5 lg:gap-2 text-gray-500">
                                                     {loan.time && (
                                                         <>
                                                             <div className="flex items-center gap-1">
-                                                                <Clock size={12} />
-                                                                <span className="text-[10px] font-medium">{loan.time}</span>
+                                                                <Clock className="w-3 h-3 lg:w-3.5 lg:h-3.5" />
+                                                                <span className="text-[10px] lg:text-xs font-medium">{loan.time}</span>
                                                             </div>
-                                                            <span className="text-[10px]">|</span>
+                                                            <span className="text-[10px] lg:text-xs">|</span>
                                                         </>
                                                     )}
                                                     <div className="flex items-center gap-1 flex-1 min-w-0">
-                                                        <User size={12} />
-                                                        <span className="text-[10px] font-medium truncate">{loan.pic}</span>
+                                                        <User className="w-3 h-3 lg:w-3.5 lg:h-3.5" />
+                                                        <span className="text-[10px] lg:text-xs font-medium truncate">{loan.pic}</span>
                                                     </div>
                                                 </div>
                                             </div>

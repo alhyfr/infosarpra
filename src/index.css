@@ -40,28 +40,49 @@ code {
     monospace;
 }
 
-/* Optimasi untuk TV 45 inci dan layar besar */
+/* Optimasi untuk TV 45 inci - menggunakan ukuran seperti lg breakpoint (1024px+) */
+/* Tailwind lg breakpoint = 1024px, kita gunakan ukuran yang sama */
+@media (min-width: 1024px) {
+  html {
+    font-size: 16px; /* Base font size sama seperti desktop lg */
+  }
+  
+  body {
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+}
+
+/* Untuk TV dengan resolusi Full HD (1920px) - tetap gunakan ukuran lg */
 @media (min-width: 1920px) {
   html {
-    font-size: 16px;
+    font-size: 16px; /* Tetap sama seperti lg (1024px) untuk konsistensi */
   }
   
   body {
     font-size: 1rem;
   }
+  
+  /* Memastikan semua ukuran menggunakan base lg */
+  .text-xs { font-size: 0.75rem; line-height: 1rem; }
+  .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+  .text-base { font-size: 1rem; line-height: 1.5rem; }
+  .text-lg { font-size: 1.125rem; line-height: 1.75rem; }
+  .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+  .text-2xl { font-size: 1.5rem; line-height: 2rem; }
+  .text-3xl { font-size: 1.875rem; line-height: 2.25rem; }
 }
 
-/* Untuk TV dengan resolusi lebih besar */
+/* Untuk TV dengan resolusi lebih besar (2K/4K) - scale up proporsional tapi tetap konsisten */
 @media (min-width: 2560px) {
   html {
-    font-size: 18px;
+    font-size: 18px; /* Sedikit lebih besar untuk 2K, tapi proporsional */
   }
 }
 
-/* Untuk TV dengan resolusi 4K */
 @media (min-width: 3840px) {
   html {
-    font-size: 20px;
+    font-size: 20px; /* Sedikit lebih besar untuk 4K, tapi proporsional */
   }
 }
 

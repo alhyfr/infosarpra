@@ -4,12 +4,12 @@ import Team from './Team';
 
 export default function TV() {
     return (
-        <div className='grid grid-rows-5 grid-cols-8 gap-1 h-screen'>
-            <div className='col-span-2 row-span-3 bg-slate-200'>
+        <div className='grid grid-rows-5 grid-cols-8 gap-1 h-screen w-screen overflow-hidden'>
+            <div className='col-span-2 row-span-3 bg-slate-200 overflow-hidden'>
                 <PinjamRuangan />
             </div>
             <div className='col-span-2 row-span-3 bg-slate-200'>2</div>
-            <div className='col-span-2 row-span-2 bg-slate-200'>
+            <div className='col-span-2 row-span-2 bg-slate-200 overflow-hidden'>
                 <Team />
             </div>
             <div className='col-span-2 row-span-2 bg-slate-200'>4</div>

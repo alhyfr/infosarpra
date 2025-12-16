@@ -115,24 +115,24 @@ export default function Team() {
   const currentMember = teamData[currentIndex];
 
   return (
-    <div className="h-full w-full bg-gradient-to-br from-slate-900 via-gray-900 to-slate-800 p-2 shadow-lg overflow-hidden flex flex-col font-sans relative">
+    <div className="h-full w-full bg-gradient-to-br from-slate-900 via-gray-900 to-slate-800 p-2 lg:p-4 shadow-lg overflow-hidden flex flex-col font-sans relative">
       {/* Decorative Background Elements */}
       <div className="absolute top-0 right-0 w-72 h-72 bg-blue-600/10 rounded-full blur-3xl"></div>
       <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-600/10 rounded-full blur-3xl"></div>
 
       {/* Header - Compact */}
       <motion.div
-        className="flex justify-between items-center mb-2 border-b border-gray-700 pb-2 relative z-10"
+        className="flex justify-between items-center mb-2 lg:mb-3 border-b border-gray-700 pb-2 relative z-10"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <h2 className="text-base md:text-lg font-bold text-white flex items-center gap-2">
-          <Users className="text-blue-400" size={20} />
+        <h2 className="text-sm lg:text-lg font-bold text-white flex items-center gap-2">
+          <Users className="text-blue-400 w-4 h-4 lg:w-5 lg:h-5" />
           <span>IT, LAB, & SARPRA</span>
         </h2>
         {teamData.length > 0 && (
-          <div className="text-white/80 text-xs font-medium">
+          <div className="text-white/80 text-xs lg:text-sm font-medium">
             {currentIndex + 1} / {teamData.length}
           </div>
         )}
@@ -188,13 +188,13 @@ export default function Team() {
 
                 {/* Text Overlay - Bottom */}
                 <motion.div
-                  className="absolute bottom-0 left-0 right-0 p-4 z-10"
+                  className="absolute bottom-0 left-0 right-0 p-3 lg:p-4 z-10"
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3, duration: 0.6 }}
                 >
                   <motion.h3
-                    className="text-2xl sm:text-3xl md:text-4xl lg:text-3xl font-bold text-white mb-2 drop-shadow-2xl"
+                    className="text-lg lg:text-2xl xl:text-3xl font-bold text-white mb-1 lg:mb-2 drop-shadow-2xl"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.5 }}
@@ -202,7 +202,7 @@ export default function Team() {
                     {currentMember?.nama || "Team Member"}
                   </motion.h3>
                   <motion.p
-                    className="text-base sm:text-lg md:text-xl lg:text-2xl text-white/95 mb-1 drop-shadow-lg"
+                    className="text-sm lg:text-base xl:text-lg text-white/95 mb-1 drop-shadow-lg"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.6 }}
@@ -211,7 +211,7 @@ export default function Team() {
                   </motion.p>
                   {currentMember?.nikname && (
                     <motion.p
-                      className="text-sm sm:text-base md:text-lg text-white/80 drop-shadow-lg"
+                      className="text-xs lg:text-sm text-white/80 drop-shadow-lg"
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.7 }}
