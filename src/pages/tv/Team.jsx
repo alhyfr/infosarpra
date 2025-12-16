@@ -186,23 +186,23 @@ export default function Team() {
                   }}
                 />
 
-                {/* Text Overlay - Bottom - VERY COMPACT */}
+                {/* Text Overlay - Bottom - ALL text-xs */}
                 <motion.div
                   className="absolute bottom-0 left-0 right-0 p-2 lg:p-3 z-10"
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3, duration: 0.6 }}
                 >
-                  <motion.h3
-                    className="text-sm lg:text-base xl:text-lg font-bold text-white mb-0.5 lg:mb-1 drop-shadow-2xl leading-tight"
+                  <motion.div
+                    className=" text-white mb-0.5 drop-shadow-2xl leading-tight"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.5 }}
                   >
                     {currentMember?.nama || "Team Member"}
-                  </motion.h3>
+                  </motion.div>
                   <motion.p
-                    className="text-xs lg:text-sm text-white/95 mb-0.5 drop-shadow-lg leading-tight"
+                    className="text-xs text-white/95 mb-0.5 drop-shadow-lg leading-tight"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.6 }}
