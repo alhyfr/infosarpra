@@ -14,7 +14,6 @@ export default function PinjamRuangan() {
             setLoading(true);
             setError(null);
             const response = await api.get("/pinjam-ruangan");
-            // Pastikan response.data adalah array
             const data = Array.isArray(response.data)
                 ? response.data
                 : response.data?.data || [];
@@ -22,7 +21,7 @@ export default function PinjamRuangan() {
             console.log("Data ruangan:", data);
         } catch (error) {
             console.error("Error fetching ruangan:", error);
-            setRuangan([]); // Set empty array jika error
+            setRuangan([]);
             setError(error.message);
         } finally {
             setLoading(false);
@@ -37,40 +36,40 @@ export default function PinjamRuangan() {
         const websocketUrl =
             process.env.REACT_APP_WEBSOCKET_URL || "wss://api7.sistelk.id";
         const ws = new WebSocket(websocketUrl);
+
         ws.onopen = () => {
             console.log("WebSocket Connected");
         };
+
         ws.onmessage = (event) => {
             const msg = JSON.parse(event.data);
             if (msg.type === "pinruanganUpdated") {
-                getRuangan(); // Trigger refresh polling
+                getRuangan();
             }
         };
+
         ws.onclose = () => {
             console.log("WebSocket Disconnected");
         };
+
         return () => {
             ws.close();
         };
     }, [getRuangan]);
 
-    // Auto reload data setiap 1 menit
     useEffect(() => {
         const interval = setInterval(() => {
             getRuangan();
-        }, 60000); // 1 menit
+        }, 60000);
         return () => clearInterval(interval);
     }, [getRuangan]);
 
-    // Fungsi untuk menentukan status berdasarkan waktu
     const getStatusByTime = (tanggalPinjam, waktuMulai, waktuSelesai) => {
         if (!tanggalPinjam || (!waktuMulai && !waktuSelesai)) {
             return null;
         }
-
         const now = dayjs();
         const tanggal = dayjs(tanggalPinjam);
-
         let waktuStart = null;
         let waktuEnd = null;
 
@@ -90,22 +89,18 @@ export default function PinjamRuangan() {
                 .second(59);
         }
 
-        // Jika waktu selesai sudah lewat
         if (waktuEnd && now.isAfter(waktuEnd)) {
             return "selesai";
         }
 
-        // Jika sedang berlangsung
         if (waktuStart && waktuEnd && now.isAfter(waktuStart) && now.isBefore(waktuEnd)) {
             return "on going";
         }
 
-        // Jika waktu mulai belum tiba
         if (waktuStart && now.isBefore(waktuStart)) {
             return "coming soon";
         }
 
-        // Fallback: jika hanya ada tanggal tanpa waktu
         if (!waktuStart && !waktuEnd) {
             if (now.isAfter(tanggal.endOf("day"))) {
                 return "selesai";
@@ -119,7 +114,6 @@ export default function PinjamRuangan() {
         return null;
     };
 
-    // Mapping data dari API ke format untuk display
     const loans = ruangan.map((booking, index) => {
         const ruanganNama =
             booking.ruangan ||
@@ -152,12 +146,10 @@ export default function PinjamRuangan() {
             booking.alasan ||
             "-";
 
-        // Tentukan status berdasarkan waktu atau dari API
         const statusByTime = getStatusByTime(tanggalPinjam, waktuMulai, waktuSelesai);
         const statusFromApi = booking.status || booking.status_peminjaman;
         const status = statusByTime || statusFromApi || "pending";
 
-        // Format waktu untuk display
         const timeDisplay = waktuMulai && waktuSelesai
             ? `${waktuMulai} - ${waktuSelesai}`
             : waktuMulai
@@ -166,7 +158,6 @@ export default function PinjamRuangan() {
             ? `- ${waktuSelesai}`
             : "";
 
-        // Tentukan status text untuk display
         let statusText = "Akan Datang";
         if (status === "on going" || status === "active" || status === "aktif" || status === "ongoing") {
             statusText = "Sedang Berlangsung";
@@ -187,15 +178,14 @@ export default function PinjamRuangan() {
         };
     });
 
-    // Extended array for seamless infinite scroll
     const extendedLoans = loans.length > 0 ? [...loans, ...loans, ...loans, ...loans] : [];
 
     if (loading) {
         return (
             <div className="h-full w-full bg-gradient-to-br from-slate-900 via-gray-900 to-slate-800 flex items-center justify-center">
                 <div className="text-center">
-                    <div className="w-12 h-12 border-4 border-white border-t-transparent rounded-full mx-auto mb-4 animate-spin"></div>
-                    <h2 className="text-xl font-bold text-white mb-2">Loading Data...</h2>
+                    <div className="w-10 h-10 border-4 border-white border-t-transparent rounded-full mx-auto mb-3 animate-spin"></div>
+                    <h2 className="text-base font-bold text-white mb-2">Loading Data...</h2>
                 </div>
             </div>
         );
@@ -205,32 +195,32 @@ export default function PinjamRuangan() {
         return (
             <div className="h-full w-full bg-gradient-to-br from-slate-900 via-gray-900 to-slate-800 flex items-center justify-center">
                 <div className="text-center">
-                    <h2 className="text-xl font-bold text-white mb-2">Failed to Load Data</h2>
-                    <p className="text-white/80 text-sm">{error}</p>
+                    <h2 className="text-base font-bold text-white mb-2">Failed to Load Data</h2>
+                    <p className="text-white/80 text-xs">{error}</p>
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="h-full w-full bg-gradient-to-br from-slate-900 via-gray-900 to-slate-800 p-2 lg:p-4 shadow-lg overflow-hidden flex flex-col font-sans">
-            {/* Header */}
-            <div className="flex justify-between items-center mb-2 lg:mb-4 border-b border-slate-100 pb-2 shadow-lg">
-                <h2 className="text-base lg:text-xl font-bold text-slate-800 flex items-center gap-2">
-                    <HouseWifi className="text-white" size={20} />
+        <div className="h-full w-full bg-gradient-to-br from-slate-900 via-gray-900 to-slate-800 p-2 shadow-lg overflow-hidden flex flex-col font-sans">
+            {/* Header - SMALLER */}
+            <div className="flex justify-between items-center mb-2 border-b border-slate-100 pb-1.5 shadow-lg">
+                <h2 className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                    <HouseWifi className="text-white" size={16} />
                     <span className="text-white">
                         Peminjaman Ruangan
                     </span>
                 </h2>
-                <span className="text-xs lg:text-sm font-bold px-2 lg:px-3 py-1 bg-slate-100 text-slate-500 rounded-full border border-slate-200">
+                <span className="text-[10px] font-bold px-2 py-0.5 bg-slate-100 text-slate-500 rounded-full border border-slate-200">
                     {dayjs().format('dddd, DD MMMM YYYY')}
                 </span>
             </div>
 
-            {/* Marquee Container - Seamless Infinite Scroll */}
+            {/* Marquee Container */}
             {loans.length === 0 ? (
                 <div className="flex-1 flex items-center justify-center">
-                    <p className="text-white/80 text-sm">Tidak ada data peminjaman ruangan</p>
+                    <p className="text-white/80 text-xs">Tidak ada data peminjaman ruangan</p>
                 </div>
             ) : (
                 <div className="flex-1 min-h-0 w-full overflow-hidden relative">
@@ -240,17 +230,15 @@ export default function PinjamRuangan() {
                         pauseOnHover={true}
                         className="h-full"
                     >
-                        {/* Container - No vertical padding for seamless scroll */}
-                        <div className="w-full px-2">
-                            {/* Single Column Grid */}
-                            <div className="grid grid-cols-1 gap-2">
+                        <div className="w-full px-1.5">
+                            <div className="grid grid-cols-1 gap-1.5">
                                 {extendedLoans.map((loan, index) => (
                                     <div key={`${loan.id}-${index}`} className="relative">
-                                        {/* MotoGP Style Card */}
-                                        <div className="relative flex flex-row h-16 lg:h-20 xl:h-24 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
-                                            {/* Top Status Bar */}
+                                        {/* Card - SMALLER HEIGHT */}
+                                        <div className="relative flex flex-row h-12 rounded-md overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
+                                            {/* Top Status Bar - THINNER */}
                                             <div 
-                                                className={`absolute top-0 left-0 w-full h-1 ${
+                                                className={`absolute top-0 left-0 w-full h-0.5 ${
                                                     loan.isActive
                                                         ? 'bg-red-500' 
                                                         : loan.status === 'Selesai'
@@ -259,9 +247,9 @@ export default function PinjamRuangan() {
                                                 }`}
                                             />
 
-                                            {/* Left Section - Icon */}
+                                            {/* Left Section - Icon - SMALLER */}
                                             <div 
-                                                className={`w-12 lg:w-16 flex items-center justify-center ${
+                                                className={`w-10 flex items-center justify-center ${
                                                     loan.isActive
                                                         ? 'bg-red-500' 
                                                         : loan.status === 'Selesai'
@@ -269,35 +257,35 @@ export default function PinjamRuangan() {
                                                         : 'bg-amber-500'
                                                 }`}
                                             >
-                                                <Building2 className="text-white w-6 h-6 lg:w-8 lg:h-8" strokeWidth={2.5} />
+                                                <Building2 className="text-white w-5 h-5" strokeWidth={2.5} />
                                             </div>
 
-                                            {/* Right Section - Info */}
-                                            <div className="flex-1 bg-white p-1.5 lg:p-2 xl:p-3 flex flex-col justify-between">
-                                                {/* Room Name */}
-                                                <h3 className="text-xs lg:text-sm xl:text-base font-bold uppercase text-gray-800 truncate leading-tight">
+                                            {/* Right Section - Info - SMALLER TEXT */}
+                                            <div className="flex-1 bg-white p-1.5 flex flex-col justify-between">
+                                                {/* Room Name - SMALLER */}
+                                                <h3 className="text-[10px] font-bold uppercase text-gray-800 truncate leading-tight">
                                                     {loan.room}
                                                 </h3>
 
-                                                {/* Activity */}
-                                                <p className="text-[10px] lg:text-xs xl:text-sm text-gray-600 truncate leading-tight">
+                                                {/* Activity - SMALLER */}
+                                                <p className="text-[9px] text-gray-600 truncate leading-tight">
                                                     {loan.activity}
                                                 </p>
 
-                                                {/* Bottom Info Bar */}
-                                                <div className="flex items-center gap-1.5 lg:gap-2 text-gray-500">
+                                                {/* Bottom Info Bar - SMALLER */}
+                                                <div className="flex items-center gap-1 text-gray-500">
                                                     {loan.time && (
                                                         <>
-                                                            <div className="flex items-center gap-1">
-                                                                <Clock className="w-3 h-3 lg:w-3.5 lg:h-3.5" />
-                                                                <span className="text-[10px] lg:text-xs font-medium">{loan.time}</span>
+                                                            <div className="flex items-center gap-0.5">
+                                                                <Clock className="w-2.5 h-2.5" />
+                                                                <span className="text-[9px] font-medium">{loan.time}</span>
                                                             </div>
-                                                            <span className="text-[10px] lg:text-xs">|</span>
+                                                            <span className="text-[9px]">|</span>
                                                         </>
                                                     )}
-                                                    <div className="flex items-center gap-1 flex-1 min-w-0">
-                                                        <User className="w-3 h-3 lg:w-3.5 lg:h-3.5" />
-                                                        <span className="text-[10px] lg:text-xs font-medium truncate">{loan.pic}</span>
+                                                    <div className="flex items-center gap-0.5 flex-1 min-w-0">
+                                                        <User className="w-2.5 h-2.5" />
+                                                        <span className="text-[9px] font-medium truncate">{loan.pic}</span>
                                                     </div>
                                                 </div>
                                             </div>
