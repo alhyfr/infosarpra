@@ -11,8 +11,7 @@ import Peminjaman from "./pages/slidepage/Peminjaman";
 
 function App() {
   return (
-    <>
-
+    <div className="w-full h-screen h-dvh overflow-hidden">
       <Swiper
         modules={[Autoplay, EffectFade]}
         spaceBetween={0}
@@ -28,6 +27,7 @@ function App() {
         }}
         loop={true} // Loop terus menerus
         speed={1000} // Durasi transisi 1 detik
+        className="w-full h-full"
         onSlideChange={() => console.log("slide change")}
         onSwiper={(swiper) => console.log(swiper)}
       >
@@ -44,8 +44,7 @@ function App() {
           <Peminjaman />
         </SwiperSlide>
       </Swiper>
-
-    </>
+    </div>
   );
 }
 

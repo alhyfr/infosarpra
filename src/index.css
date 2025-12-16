@@ -2,16 +2,128 @@
 @tailwind components;
 @tailwind utilities;
 
+* {
+  box-sizing: border-box;
+}
+
+html {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
 body {
   margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh; /* Dynamic viewport height untuk browser modern */
+  overflow: hidden;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Optimasi untuk TV */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+/* Optimasi untuk TV 45 inci dan layar besar */
+@media (min-width: 1920px) {
+  html {
+    font-size: 16px;
+  }
+  
+  body {
+    font-size: 1rem;
+  }
+}
+
+/* Untuk TV dengan resolusi lebih besar */
+@media (min-width: 2560px) {
+  html {
+    font-size: 18px;
+  }
+}
+
+/* Untuk TV dengan resolusi 4K */
+@media (min-width: 3840px) {
+  html {
+    font-size: 20px;
+  }
+}
+
+/* Memastikan semua elemen menggunakan full height */
+.swiper {
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+}
+
+.swiper-slide {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Mencegah zoom pada touch devices */
+@media (pointer: coarse) {
+  * {
+    touch-action: manipulation;
+  }
+}
+
+/* Memastikan semua container menggunakan full height */
+.swiper-wrapper {
+  height: 100% !important;
+}
+
+/* Optimasi rendering untuk TV */
+* {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-perspective: 1000;
+  perspective: 1000;
+}
+
+/* Memastikan gambar dan video tidak melebihi container */
+img, video {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Smooth scrolling untuk TV */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Mencegah text selection yang tidak diinginkan di TV */
+body {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Tetap izinkan selection untuk input dan textarea */
+input, textarea {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
 }
