@@ -83,11 +83,11 @@ export default function Team() {
           transition={{ duration: 0.5 }}
         >
           <motion.div
-            className="w-16 h-16 border-4 border-white border-t-transparent rounded-full mx-auto mb-4"
+            className="w-14 h-14 border-4 border-white border-t-transparent rounded-full mx-auto mb-4"
             animate={{ rotate: 360 }}
             transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
           />
-          <h2 className="text-xl font-bold text-white mb-2">
+          <h2 className="text-lg font-bold text-white mb-2">
             Loading Team Data...
           </h2>
         </motion.div>
@@ -103,7 +103,7 @@ export default function Team() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <h2 className="text-xl font-bold text-white mb-2">
+          <h2 className="text-lg font-bold text-white mb-2">
             Failed to Load Data
           </h2>
           <p className="text-white/80 text-sm">{error}</p>
@@ -115,24 +115,24 @@ export default function Team() {
   const currentMember = teamData[currentIndex];
 
   return (
-    <div className="h-full w-full bg-gradient-to-br from-slate-900 via-gray-900 to-slate-800 p-2 lg:p-4 shadow-lg overflow-hidden flex flex-col font-sans relative">
+    <div className="h-full w-full bg-gradient-to-br from-slate-900 via-gray-900 to-slate-800 p-3 lg:p-4 shadow-lg overflow-hidden flex flex-col font-sans relative">
       {/* Decorative Background Elements */}
       <div className="absolute top-0 right-0 w-72 h-72 bg-blue-600/10 rounded-full blur-3xl"></div>
       <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-600/10 rounded-full blur-3xl"></div>
 
       {/* Header - Compact */}
       <motion.div
-        className="flex justify-between items-center mb-2 lg:mb-3 border-b border-gray-700 pb-2 relative z-10"
+        className="flex justify-between items-center mb-2 border-b border-gray-700 pb-2 relative z-10"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <h2 className="text-sm lg:text-lg font-bold text-white flex items-center gap-2">
-          <Users className="text-blue-400 w-4 h-4 lg:w-5 lg:h-5" />
+        <h2 className="text-sm lg:text-base font-bold text-white flex items-center gap-2">
+          <Users className="text-blue-400" size={18} />
           <span>IT, LAB, & SARPRA</span>
         </h2>
         {teamData.length > 0 && (
-          <div className="text-white/80 text-xs lg:text-sm font-medium">
+          <div className="text-white/80 text-xs font-medium">
             {currentIndex + 1} / {teamData.length}
           </div>
         )}
@@ -160,14 +160,14 @@ export default function Team() {
                       : ""
                   }
                   alt={currentMember?.nama || "Team Member"}
-                  className="absolute inset-0 w-full h-auto object-cover"
+                  className="absolute inset-0 w-full h-full object-cover"
                   initial={{ scale: 1.1 }}
                   animate={{ scale: 1 }}
                   transition={{ duration: 0.8 }}
                 />
 
-                {/* Dark Overlay Gradient for Text Readability */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+                {/* Dark Overlay Gradient - THINNER for more photo visibility */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/30 to-transparent"></div>
 
                 {/* Glow Effect */}
                 <motion.div
@@ -175,7 +175,7 @@ export default function Team() {
                   animate={{
                     boxShadow: [
                       "inset 0 0 0px rgba(59, 130, 246, 0.2)",
-                      "inset 0 0 40px rgba(59, 130, 246, 0.4)",
+                      "inset 0 0 40px rgba(59, 130, 246, 0.3)",
                       "inset 0 0 0px rgba(59, 130, 246, 0.2)",
                     ],
                   }}
@@ -186,15 +186,15 @@ export default function Team() {
                   }}
                 />
 
-                {/* Text Overlay - Bottom */}
+                {/* Text Overlay - Bottom - VERY COMPACT */}
                 <motion.div
-                  className="absolute bottom-0 left-0 right-0 p-3 lg:p-4 z-10"
+                  className="absolute bottom-0 left-0 right-0 p-2 lg:p-3 z-10"
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3, duration: 0.6 }}
                 >
                   <motion.h3
-                    className="text-lg lg:text-2xl xl:text-3xl font-bold text-white mb-1 lg:mb-2 drop-shadow-2xl"
+                    className="text-sm lg:text-base xl:text-lg font-bold text-white mb-0.5 lg:mb-1 drop-shadow-2xl leading-tight"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.5 }}
@@ -202,7 +202,7 @@ export default function Team() {
                     {currentMember?.nama || "Team Member"}
                   </motion.h3>
                   <motion.p
-                    className="text-sm lg:text-base xl:text-lg text-white/95 mb-1 drop-shadow-lg"
+                    className="text-xs lg:text-sm text-white/95 mb-0.5 drop-shadow-lg leading-tight"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.6 }}
@@ -211,7 +211,7 @@ export default function Team() {
                   </motion.p>
                   {currentMember?.nikname && (
                     <motion.p
-                      className="text-xs lg:text-sm text-white/80 drop-shadow-lg"
+                      className="text-xs text-white/80 drop-shadow-lg"
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.7 }}
@@ -220,12 +220,9 @@ export default function Team() {
                     </motion.p>
                   )}
                 </motion.div>
-
-                {/* Optional: Top Corner Badge */}
-               
               </div>
 
-              {/* Progress Bar - Compact */}
+              {/* Progress Bar */}
               <motion.div
                 className="mt-2 h-1 bg-white/20 rounded-full overflow-hidden"
                 initial={{ opacity: 0 }}
