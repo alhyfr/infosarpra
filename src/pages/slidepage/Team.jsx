@@ -45,7 +45,6 @@ const Team = () => {
       const msg = JSON.parse(event.data);
       if (msg.type === 'teamUpdated') {
         getTeam(); // Trigger refresh polling
-        console.log('Team Updated');
       }
     };
     ws.onclose = () => {
