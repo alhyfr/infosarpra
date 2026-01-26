@@ -120,17 +120,17 @@ export default function COE() {
                 <header className="flex-none mb-8 text-center lg:text-left flex flex-col lg:flex-row justify-between items-end gap-6 border-b border-white/5 pb-6">
                     <div className="w-full lg:w-auto">
                         <div className="flex items-center gap-3 mb-2 justify-center lg:justify-start">
-                            <span className="px-3 py-1 rounded-full bg-neutral-900 border border-white/10 text-[10px] sm:text-xs font-medium tracking-wider text-neutral-400 uppercase">
+                            <span className="px-3 py-1 rounded-full bg-neutral-900 border border-white/10 text-[8px] sm:text-[9px] font-medium tracking-wider text-neutral-400 uppercase">
                                 {new Date().getFullYear()} Calendar of Events
                             </span>
                         </div>
-                        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-2 leading-tight">
+                        <h1 className="text-xl sm:text-xl md:text-xl lg:text-xl font-bold tracking-tight mb-2 leading-tight">
                             Calendar of <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-emerald-400">Events</span>
                         </h1>
                         <div className="mt-1 inline-block relative group max-w-full">
                             <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 via-purple-500 to-emerald-500 rounded-lg blur opacity-30 group-hover:opacity-70 transition duration-1000 group-hover:duration-200 animate-tilt"></div>
                             <div className="relative px-4 sm:px-7 py-2 bg-black rounded-lg leading-none flex items-center justify-center">
-                                <span className="text-sm sm:text-lg font-black italic tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-indigo-200 via-purple-200 to-emerald-200 group-hover:text-white transition-colors duration-300 text-center">
+                                <span className="text-[10px] sm:text-xs font-black italic tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-indigo-200 via-purple-200 to-emerald-200 group-hover:text-white transition-colors duration-300 text-center">
                                     UNIT IT, LAB, & SARPRA
                                 </span>
                             </div>
@@ -139,10 +139,10 @@ export default function COE() {
 
                     {/* Modern Date Display */}
                     <div className="hidden lg:block text-right flex-none">
-                        <div className="text-5xl font-black text-neutral-800 tracking-tighter">
+                        <div className="text-3xl font-black text-neutral-800 tracking-tighter">
                             {new Date().toLocaleString('default', { month: 'short' }).toUpperCase()}
                         </div>
-                        <div className="text-lg font-medium text-neutral-500">
+                        <div className="text-xs font-medium text-neutral-500">
                             Quarter {Math.floor((new Date().getMonth() + 3) / 3)}
                         </div>
                     </div>
@@ -162,14 +162,14 @@ export default function COE() {
                             </div>
                             <div className="flex-1">
                                 <div className="flex items-center gap-2">
-                                    <h2 className="text-xl sm:text-2xl font-bold">Internal Agenda</h2>
+                                    <h2 className="text-base sm:text-lg font-bold">Internal Agenda</h2>
                                     {internal.filter(e => e.isOngoing).length > 0 && (
                                         <span className="px-2 py-0.5 rounded-full bg-red-500/20 text-red-400 text-[10px] font-bold border border-red-500/50 animate-pulse">
                                             {internal.filter(e => e.isOngoing).length} SEDANG BERJALAN
                                         </span>
                                     )}
                                 </div>
-                                <p className="text-xs sm:text-sm text-neutral-500">Kegiatan dalam perusahaan</p>
+                                <p className="text-[10px] sm:text-xs text-neutral-500">Kegiatan dalam perusahaan</p>
                             </div>
                         </div>
 
@@ -204,14 +204,14 @@ export default function COE() {
                             </div>
                             <div className="flex-1">
                                 <div className="flex items-center gap-2 lg:justify-end">
-                                    <h2 className="text-xl sm:text-2xl font-bold">External Agenda</h2>
+                                    <h2 className="text-base sm:text-lg font-bold">External Agenda</h2>
                                     {external.filter(e => e.isOngoing).length > 0 && (
                                         <span className="px-2 py-0.5 rounded-full bg-red-500/20 text-red-400 text-[10px] font-bold border border-red-500/50 animate-pulse">
                                             {external.filter(e => e.isOngoing).length} LIVE
                                         </span>
                                     )}
                                 </div>
-                                <p className="text-xs sm:text-sm text-neutral-500">Kunjungan, Event & Client</p>
+                                <p className="text-[10px] sm:text-xs text-neutral-500">Kunjungan, Event & Client</p>
                             </div>
                         </div>
 
@@ -260,7 +260,7 @@ function EventCard({ data, type }) {
     const ongoingShadow = data.isOngoing ? 'shadow-2xl' : '';
 
     return (
-        <div className={`group relative w-full p-5 rounded-3xl ${ongoingBg} border-2 ${ongoingBorder} ${ongoingShadow} ${accentColor} transition-all duration-300 hover:bg-neutral-900 hover:shadow-2xl hover:-translate-y-1 cursor-pointer overflow-hidden ${data.isOngoing ? 'animate-pulse-border' : ''}`}>
+        <div className={`group relative w-full p-4 rounded-2xl ${ongoingBg} border-2 ${ongoingBorder} ${ongoingShadow} ${accentColor} transition-all duration-300 hover:bg-neutral-900 hover:shadow-2xl hover:-translate-y-1 cursor-pointer overflow-hidden ${data.isOngoing ? 'animate-pulse-border' : ''}`}>
 
             {/* Glow Effect on Hover */}
             <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${data.color} opacity-0 group-hover:opacity-10 blur-[60px] transition-opacity duration-500`} />
@@ -270,9 +270,9 @@ function EventCard({ data, type }) {
                 <div className={`absolute inset-0 bg-gradient-to-br ${isInternal ? 'from-emerald-500/10' : 'from-indigo-500/10'} to-transparent blur-xl animate-pulse`} />
             )}
 
-            <div className="flex gap-5 items-start relative z-10">
+            <div className="flex gap-4 items-start relative z-10">
                 {/* Date Block */}
-                <div className="flex-shrink-0 flex flex-col items-center justify-center w-24 h-24 rounded-2xl bg-white/5 border border-white/10 group-hover:bg-white/10 transition-colors p-2">
+                <div className="flex-shrink-0 flex flex-col items-center justify-center w-16 h-16 rounded-xl bg-white/5 border border-white/10 group-hover:bg-white/10 transition-colors p-1.5">
                     {data.date.includes('-') && data.date.length > 10 ? (
                         // Layout untuk Range Lintas Bulan (2 baris)
                         <>
@@ -287,10 +287,10 @@ function EventCard({ data, type }) {
                     ) : (
                         // Layout Normal (1 Bulan)
                         <>
-                            <span className={`text-xs font-bold uppercase tracking-wider mb-1 ${isInternal ? 'text-emerald-500' : 'text-indigo-500'}`}>
+                            <span className={`text-[10px] font-bold uppercase tracking-wider mb-1 ${isInternal ? 'text-emerald-500' : 'text-indigo-500'}`}>
                                 {data.date.includes('-') ? data.date.split(' ').slice(1).join(' ') : data.date.split(' ')[1]}
                             </span>
-                            <span className="text-lg font-bold text-white text-center leading-tight px-1">
+                            <span className="text-base font-bold text-white text-center leading-tight px-1">
                                 {data.date.includes('-') ? data.date.split(' ')[0] : data.date.split(' ')[0]}
                             </span>
                         </>
@@ -300,34 +300,34 @@ function EventCard({ data, type }) {
                 {/* Content */}
                 <div className="flex-grow">
                     <div className="flex flex-wrap items-center gap-2 mb-2">
-                        <span className={`px-2 py-0.5 rounded-md text-[10px] uppercase font-bold tracking-wider ${badgeBg}`}>
+                        <span className={`px-2 py-0.5 rounded-md text-[8px] uppercase font-bold tracking-wider ${badgeBg}`}>
                             {data.category}
                         </span>
                         {data.isOngoing && (
-                            <span className="relative px-2 py-0.5 rounded-md text-[10px] uppercase font-bold tracking-wider bg-red-500/20 text-red-400 border border-red-500/50 animate-pulse">
+                            <span className="relative px-2 py-0.5 rounded-md text-[8px] uppercase font-bold tracking-wider bg-red-500/20 text-red-400 border border-red-500/50 animate-pulse">
                                 <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-red-500 rounded-full animate-ping"></span>
                                 <span className="relative">● LIVE NOW</span>
                             </span>
                         )}
                     </div>
 
-                    <h3 className="text-xl font-bold text-white mb-2 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-neutral-400 transition-all">
+                    <h3 className="text-base font-bold text-white mb-2 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-neutral-400 transition-all">
                         {data.title}
                     </h3>
 
                     {data.status && (
                         <div className="mb-3">
-                            <span className="px-2 py-0.5 rounded-md text-[10px] uppercase font-bold tracking-wider bg-neutral-800/50 text-neutral-300 border border-white/10">
+                            <span className="px-2 py-0.5 rounded-md text-[8px] uppercase font-bold tracking-wider bg-neutral-800/50 text-neutral-300 border border-white/10">
                                 {data.status}
                             </span>
                         </div>
                     )}
 
-                    <p className="text-sm text-neutral-400 leading-relaxed mb-4 line-clamp-2">
+                    <p className="text-xs text-neutral-400 leading-relaxed mb-4 line-clamp-2">
                         {data.desc}
                     </p>
 
-                    <div className={`flex items-center gap-2 text-sm font-medium ${iconColor} opacity-80 group-hover:opacity-100`}>
+                    <div className={`flex items-center gap-2 text-xs font-medium ${iconColor} opacity-80 group-hover:opacity-100`}>
                         <MapPin size={14} />
                         <span>{data.location}</span>
                         <ArrowRight size={14} className="ml-auto opacity-0 group-hover:opacity-100 transform -translate-x-2 group-hover:translate-x-0 transition-all" />
