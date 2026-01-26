@@ -1,6 +1,7 @@
 import { createBrowserRouter } from "react-router";
 import App from "../App";
 import TV from "../pages/tv";
+import COE from "../pages/coe";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -9,6 +10,10 @@ const router = createBrowserRouter([
   {
     path: "/tv",
     element: <TV />,
+  },
+  {
+    path: "/coe",
+    element: <COE />,
   },
 ]);
 

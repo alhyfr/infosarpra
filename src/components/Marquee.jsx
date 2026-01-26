@@ -5,7 +5,8 @@ export default function Marquee({
     speed = 40,
     pauseOnHover = true,
     direction = 'up',
-    className = ''
+    className = '',
+    gradient = true
 }) {
     const containerRef = useRef(null);
     const [duration, setDuration] = useState(20);
@@ -23,10 +24,10 @@ export default function Marquee({
     return (
         <div
             className={`relative overflow-hidden h-full w-full ${className}`}
-            style={{
+            style={gradient ? {
                 maskImage: 'linear-gradient(to bottom, transparent 0%, black 5%, black 95%, transparent 100%)',
                 WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 5%, black 95%, transparent 100%)'
-            }}
+            } : {}}
         >
             <div
                 ref={containerRef}
