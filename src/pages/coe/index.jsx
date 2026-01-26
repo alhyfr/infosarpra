@@ -76,7 +76,6 @@ export default function COE() {
                             date: dateDisplay || 'Date TBA',
                             location: item.lokasi || 'Headquarters',
                             category: item.nama || 'Internal',
-                            desc: item.keterangan || '-',
                             status: item.status || 'Scheduled',
                             color: colors[index % colors.length],
                             isOngoing: isOngoing
@@ -108,116 +107,87 @@ export default function COE() {
     };
 
     return (
-        <div className="h-screen bg-neutral-950 text-white font-sans selection:bg-indigo-500/30 overflow-hidden flex flex-col">
-            {/* Background Gradients */}
+        <div className="h-screen bg-gradient-to-br from-neutral-950 via-neutral-900 to-neutral-950 text-white font-sans selection:bg-indigo-500/30 overflow-hidden flex flex-col">
+            {/* Enhanced Background Gradients for TV */}
             <div className="fixed top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
-                <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-indigo-600/20 rounded-full blur-[128px]" />
-                <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-emerald-600/10 rounded-full blur-[128px]" />
+                <div className="absolute top-0 left-1/4 w-[800px] h-[800px] bg-indigo-600/30 rounded-full blur-[150px] animate-pulse" />
+                <div className="absolute bottom-0 right-1/4 w-[800px] h-[800px] bg-emerald-600/20 rounded-full blur-[150px] animate-pulse" />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-purple-600/10 rounded-full blur-[120px]" />
             </div>
 
-            <main className="flex-1 w-full h-full p-8 lg:p-12 flex flex-col overflow-hidden relative z-10">
-                {/* Header Section */}
-                <header className="flex-none mb-8 text-center lg:text-left flex flex-col lg:flex-row justify-between items-end gap-6 border-b border-white/5 pb-6">
-                    <div className="w-full lg:w-auto">
-                        <div className="flex items-center gap-3 mb-2 justify-center lg:justify-start">
-                            <span className="px-3 py-1 rounded-full bg-neutral-900 border border-white/10 text-[8px] sm:text-[9px] font-medium tracking-wider text-neutral-400 uppercase">
-                                {new Date().getFullYear()} Calendar of Events
-                            </span>
-                        </div>
-                        <h1 className="text-xl sm:text-xl md:text-xl lg:text-xl font-bold tracking-tight mb-2 leading-tight">
-                            Calendar of <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-emerald-400">Events</span>
-                        </h1>
-                        <div className="mt-1 inline-block relative group max-w-full">
-                            <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 via-purple-500 to-emerald-500 rounded-lg blur opacity-30 group-hover:opacity-70 transition duration-1000 group-hover:duration-200 animate-tilt"></div>
-                            <div className="relative px-4 sm:px-7 py-2 bg-black rounded-lg leading-none flex items-center justify-center">
-                                <span className="text-[10px] sm:text-xs font-black italic tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-indigo-200 via-purple-200 to-emerald-200 group-hover:text-white transition-colors duration-300 text-center">
-                                    UNIT IT, LAB, & SARPRA
-                                </span>
-                            </div>
-                        </div>
-                    </div>
+            <main className="flex-1 w-full h-full p-6 lg:p-8 flex flex-col overflow-hidden relative z-10">
 
-                    {/* Modern Date Display */}
-                    <div className="hidden lg:block text-right flex-none">
-                        <div className="text-3xl font-black text-neutral-800 tracking-tighter">
-                            {new Date().toLocaleString('default', { month: 'short' }).toUpperCase()}
-                        </div>
-                        <div className="text-xs font-medium text-neutral-500">
-                            Quarter {Math.floor((new Date().getMonth() + 3) / 3)}
-                        </div>
-                    </div>
-                </header>
 
-                {/* Main Grid Content - Fills remaining height */}
-                <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 relative pb-4">
+                {/* Main Grid Content */}
+                <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 relative pb-4">
 
-                    {/* Divider Line (Desktop Only) */}
+                    {/* Divider Line */}
                     <div className="hidden lg:block absolute top-0 bottom-0 left-1/2 w-px bg-gradient-to-b from-transparent via-white/20 to-transparent -ml-px z-20" />
 
                     {/* Left Column: Internal Events */}
                     <section className="flex flex-col h-full overflow-hidden">
-                        <div className="flex-none flex items-center gap-4 mb-6">
-                            <div className="p-2 sm:p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
-                                <Building2 size={20} className="sm:w-6 sm:h-6" />
+                        <div className="flex-none flex items-center gap-3 mb-6">
+                            <div className="p-3 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-teal-500/20 border border-emerald-500/40 text-emerald-400 shadow-lg shadow-emerald-500/10">
+                                <Building2 size={24} strokeWidth={2} />
                             </div>
                             <div className="flex-1">
-                                <div className="flex items-center gap-2">
-                                    <h2 className="text-base sm:text-lg font-bold">Internal Agenda</h2>
+                                <div className="flex items-center gap-2 mb-1">
+                                    <h2 className="text-xl lg:text-2xl font-bold tracking-tight">Internal Agenda</h2>
                                     {internal.filter(e => e.isOngoing).length > 0 && (
-                                        <span className="px-2 py-0.5 rounded-full bg-red-500/20 text-red-400 text-[10px] font-bold border border-red-500/50 animate-pulse">
+                                        <span className="px-2 py-1 rounded-full bg-red-500/30 text-red-300 text-xs font-bold border border-red-500/60 animate-pulse shadow-md shadow-red-500/20">
                                             {internal.filter(e => e.isOngoing).length} SEDANG BERJALAN
                                         </span>
                                     )}
                                 </div>
-                                <p className="text-[10px] sm:text-xs text-neutral-500">Kegiatan dalam perusahaan</p>
+                                <p className="text-sm text-neutral-400 font-medium">Kegiatan dalam perusahaan</p>
                             </div>
                         </div>
 
                         <div className="flex-1 relative overflow-hidden mask-gradient-b">
                             {loading ? (
-                                <p className="text-neutral-500 animate-pulse mt-4">Loading internal schedule...</p>
+                                <p className="text-sm text-neutral-400 animate-pulse mt-4">Loading internal schedule...</p>
                             ) : internal.length > 0 ? (
                                 <Marquee
                                     direction="up"
                                     className="h-full w-full"
                                     pauseOnHover={true}
-                                    speed={30}
+                                    speed={10}
                                     gradient={false}
                                 >
-                                    <div className="flex flex-col gap-6 w-full py-4">
+                                    <div className="flex flex-col gap-3 w-full py-2">
                                         {internal.map((event) => (
                                             <EventCard key={event.id} data={event} type="internal" />
                                         ))}
                                     </div>
                                 </Marquee>
                             ) : (
-                                <p className="text-neutral-500 italic mt-4">No upcoming internal events.</p>
+                                <p className="text-sm text-neutral-400 italic mt-4">No upcoming internal events.</p>
                             )}
                         </div>
                     </section>
 
                     {/* Right Column: External Events */}
                     <section className="flex flex-col h-full overflow-hidden">
-                        <div className="flex-none flex items-center gap-4 mb-6 lg:flex-row-reverse lg:text-right">
-                            <div className="p-2 sm:p-3 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400">
-                                <Globe size={20} className="sm:w-6 sm:h-6" />
+                        <div className="flex-none flex items-center gap-3 mb-6 lg:flex-row-reverse lg:text-right">
+                            <div className="p-3 rounded-2xl bg-gradient-to-br from-indigo-500/20 to-violet-500/20 border border-indigo-500/40 text-indigo-400 shadow-lg shadow-indigo-500/10">
+                                <Globe size={24} strokeWidth={2} />
                             </div>
                             <div className="flex-1">
-                                <div className="flex items-center gap-2 lg:justify-end">
-                                    <h2 className="text-base sm:text-lg font-bold">External Agenda</h2>
+                                <div className="flex items-center gap-2 lg:justify-end mb-1">
+                                    <h2 className="text-xl lg:text-2xl font-bold tracking-tight">External Agenda</h2>
                                     {external.filter(e => e.isOngoing).length > 0 && (
-                                        <span className="px-2 py-0.5 rounded-full bg-red-500/20 text-red-400 text-[10px] font-bold border border-red-500/50 animate-pulse">
+                                        <span className="px-2 py-1 rounded-full bg-red-500/30 text-red-300 text-xs font-bold border border-red-500/60 animate-pulse shadow-md shadow-red-500/20">
                                             {external.filter(e => e.isOngoing).length} LIVE
                                         </span>
                                     )}
                                 </div>
-                                <p className="text-[10px] sm:text-xs text-neutral-500">Kunjungan, Event & Client</p>
+                                <p className="text-sm text-neutral-400 font-medium">Kunjungan, Event & Client</p>
                             </div>
                         </div>
 
                         <div className="flex-1 relative overflow-hidden mask-gradient-b">
                             {loading ? (
-                                <p className="text-neutral-500 animate-pulse mt-4 lg:text-right">Loading external schedule...</p>
+                                <p className="text-sm text-neutral-400 animate-pulse mt-4 lg:text-right">Loading external schedule...</p>
                             ) : external.length > 0 ? (
                                 <Marquee
                                     direction="up"
@@ -226,14 +196,14 @@ export default function COE() {
                                     speed={30}
                                     gradient={false}
                                 >
-                                    <div className="flex flex-col gap-6 w-full py-4">
+                                    <div className="flex flex-col gap-4 w-full py-3">
                                         {external.map((event) => (
                                             <EventCard key={event.id} data={event} type="external" />
                                         ))}
                                     </div>
                                 </Marquee>
                             ) : (
-                                <p className="text-neutral-500 italic mt-4 lg:text-right">No upcoming external events.</p>
+                                <p className="text-sm text-neutral-400 italic mt-4 lg:text-right">No upcoming external events.</p>
                             )}
                         </div>
                     </section>
@@ -245,27 +215,27 @@ export default function COE() {
 
 
 
-// Reusable Component untuk Card Event
+// Event Card Component
 function EventCard({ data, type }) {
     const isInternal = type === 'internal';
     const accentColor = isInternal ? 'group-hover:border-emerald-500/50' : 'group-hover:border-indigo-500/50';
     const iconColor = isInternal ? 'text-emerald-400' : 'text-indigo-400';
     const badgeBg = isInternal ? 'bg-emerald-950/30 text-emerald-300' : 'bg-indigo-950/30 text-indigo-300';
 
-    // Special styling for ongoing events
+    // Styling for ongoing events
     const ongoingBorder = data.isOngoing
         ? (isInternal ? 'border-emerald-500/70 shadow-emerald-500/20' : 'border-indigo-500/70 shadow-indigo-500/20')
         : 'border-white/5';
     const ongoingBg = data.isOngoing ? 'bg-neutral-900/80' : 'bg-neutral-900/50';
-    const ongoingShadow = data.isOngoing ? 'shadow-2xl' : '';
+    const ongoingShadow = data.isOngoing ? 'shadow-xl' : '';
 
     return (
-        <div className={`group relative w-full p-4 rounded-2xl ${ongoingBg} border-2 ${ongoingBorder} ${ongoingShadow} ${accentColor} transition-all duration-300 hover:bg-neutral-900 hover:shadow-2xl hover:-translate-y-1 cursor-pointer overflow-hidden ${data.isOngoing ? 'animate-pulse-border' : ''}`}>
+        <div className={`group relative w-full p-4 rounded-2xl ${ongoingBg} border-2 ${ongoingBorder} ${ongoingShadow} ${accentColor} transition-all duration-300 hover:bg-neutral-900 hover:shadow-xl hover:-translate-y-1 cursor-pointer overflow-hidden ${data.isOngoing ? 'animate-pulse-border' : ''}`}>
 
-            {/* Glow Effect on Hover */}
+            {/* Glow Effect */}
             <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${data.color} opacity-0 group-hover:opacity-10 blur-[60px] transition-opacity duration-500`} />
 
-            {/* Ongoing Event Glow - Always visible for ongoing events */}
+            {/* Ongoing Event Glow */}
             {data.isOngoing && (
                 <div className={`absolute inset-0 bg-gradient-to-br ${isInternal ? 'from-emerald-500/10' : 'from-indigo-500/10'} to-transparent blur-xl animate-pulse`} />
             )}
